@@ -1,5 +1,13 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+
+class InvalidLoginError extends CredentialsSignin {
+    code = "LoginError"; // código interno
+    constructor(message: string) {
+        super(message);
+        this.message = message; // Sobrescreve a mensagem padrão
+    }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [
@@ -30,7 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                     // Se a API retornar erro ou não tiver token
                     if (!res.ok || !user || !user.token) {
-                        return null; // Login falhou
+                        throw new InvalidLoginError(user.message || "Erro ao realizar login.");
                     }
 
                     // Retorna o objeto usuário + token para o NextAuth
@@ -43,8 +51,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         token: user.token,
                     };
                 } catch (error) {
-                    console.error("Erro no login:", error);
-                    return null;
+                    if (error instanceof InvalidLoginError) {
+                        throw error;
+                    }
+                    // Se for erro de conexão ou outro
+                    throw new InvalidLoginError("Ocorreu um erro inesperado. Tente novamente.");
                 }
             },
         }),
