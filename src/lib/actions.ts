@@ -3,6 +3,7 @@
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
+
 const loginSchema = z.object({
     email: z.string().email("Digite um e-mail válido."),
     password: z.string().min(1, "A senha não pode ser vazia."),
@@ -23,7 +24,7 @@ export async function authenticate(
             // Retorna o erro do primeiro campo que falhar
             return result.error.errors[0].message;
         }
-        
+
         await signIn("credentials", Object.fromEntries(formData));
     } catch (error) {
 
