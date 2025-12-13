@@ -19,14 +19,17 @@ export async function authenticate(
         const data = Object.fromEntries(formData);
 
         // 2. Valida os dados ANTES de chamar o signIn
-        const result = loginSchema.safeParse(data);
+        const result = loginSchema.safeParse(data) as any;
 
         if (!result.success) {
             // Retorna o erro do primeiro campo que falhar
-            return result.error.errors[0].message;
+            return result?.error?.errors[0].message;
         }
 
-        await signIn("credentials", Object.fromEntries(formData));
+        await signIn("credentials", {
+            ...data,
+            redirectTo: "/", // Manda pra raiz
+        });
     } catch (error) {
 
         if ((error as Error).message.includes("NEXT_REDIRECT")) {

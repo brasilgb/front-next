@@ -1,4 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { NextAuthProvider } from "@/components/session-provider";
+
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -47,7 +49,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <NextAuthProvider>
         {children}
+        </NextAuthProvider>
         </ThemeProvider>
       </body>
     </html>

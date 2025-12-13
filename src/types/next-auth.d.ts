@@ -7,7 +7,7 @@ declare module "next-auth" {
       id: string;
       name: string;
       email: string;
-      tenant_id: number;
+      tenant_id: number | null;
       token: string; // O JWT da sua API Node
     };
   }
@@ -16,7 +16,7 @@ declare module "next-auth" {
     id: string;
     name: string;
     email: string;
-    tenant_id: number;
+    tenant_id: number | null;
     token: string;
   }
 }
@@ -24,7 +24,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id: string;
-    tenant_id: number;
+    tenant_id: number | null;
     token: string;
   }
 }

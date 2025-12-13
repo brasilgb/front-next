@@ -25,7 +25,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 try {
                     // Bate na sua API Node.js (Rota de Login que criamos antes)
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -81,6 +81,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
     },
     pages: {
-        signIn: "/auth/login", // Sua página customizada de login
+        signIn: "/login", // Sua página customizada de login
     },
 });
