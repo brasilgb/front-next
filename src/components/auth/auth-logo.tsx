@@ -2,13 +2,12 @@ import Image from "next/image";
 
 function AuthLogo() {
     return (
-        <div className="mb-10">
+        <div className="mb-10 z-50">
             <Image
-            className="dark:invert"
-            src="/next.svg"
+            src="/sigmaos.png"
             alt="Next.js logo"
-            width={100}
-            height={20}
+            width={200}
+            height={40}
             priority
         />
         </div>

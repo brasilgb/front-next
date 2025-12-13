@@ -2,10 +2,11 @@
 
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { z } from "zod";
 
 
 const loginSchema = z.object({
-    email: z.string().email("Digite um e-mail válido."),
+    email: z.email("Digite um e-mail válido."),
     password: z.string().min(1, "A senha não pode ser vazia."),
 });
 
