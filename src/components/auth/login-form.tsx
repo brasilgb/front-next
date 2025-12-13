@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import AuthLogo from './auth-logo';
+import Link from 'next/link';
 
 function LoginForm() {
   const [errorMessage, formAction, isPending] = useActionState(
@@ -130,16 +130,13 @@ function LoginForm() {
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-border" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="px-2 text-muted-foreground">Ou</span>
-              </div>
             </div>
 
             <p className="text-center text-sm text-muted-foreground">
               Não tem uma conta?{" "}
-              <a href="#" className="text-accent-foreground hover:underline font-medium" onClick={(e) => e.preventDefault()}>
-                Solicite acesso
-              </a>
+              <Link href="/register" className="text-accent-foreground hover:underline font-medium">
+                Registre-se
+              </Link>
             </p>
           </form>
         </CardContent>
