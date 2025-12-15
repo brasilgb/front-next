@@ -1,11 +1,15 @@
 import AuthLayout from '@/components/auth/auth-layout'
 import LoginForm from '@/components/auth/login-form'
-import React from 'react'
 
-function Login() {
+async function Login({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>
+}) {
+    const { callbackUrl } = await searchParams
     return (
         <AuthLayout>
-            <LoginForm />
+            <LoginForm callbackUrl={callbackUrl} />
         </AuthLayout>
     )
 }

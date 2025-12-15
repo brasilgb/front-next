@@ -1,8 +1,11 @@
 import React from 'react'
+import UserActions from '../user-actions'
 
 function SiteHeader() {
   return (
-    <div>SiteHeader</div>
+    <div>
+      <UserActions />
+    </div>
   )
 }
 

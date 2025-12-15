@@ -1,30 +1,25 @@
-import NextAuth from "next-auth";
-import { JWT } from "next-auth/jwt";
+import NextAuth from "next-auth"
 
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string;
-      name: string;
-      email: string;
-      tenant_id: number | null;
-      token: string; // O JWT da sua API Node
-    };
+      id: string
+      name?: string | null
+      email?: string | null
+      tenant_id: number | null
+      apiToken?: string
+    }
   }
 
   interface User {
-    id: string;
-    name: string;
-    email: string;
-    tenant_id: number | null;
-    token: string;
+    tenant_id: number | null
+    token?: string
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
-    id: string;
-    tenant_id: number | null;
-    token: string;
+    tenant_id: number | null
+    apiToken?: string
   }
 }

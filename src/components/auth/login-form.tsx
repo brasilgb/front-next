@@ -13,8 +13,8 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import AuthLogo from './auth-logo';
 import Link from 'next/link';
 
-function LoginForm() {
-  const [errorMessage, formAction, isPending] = useActionState(
+function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
+  const [state, formAction, isPending] = useActionState(
     authenticate,
     undefined
   );
@@ -36,13 +36,19 @@ function LoginForm() {
         </CardHeader>
         <CardContent>
           <form action={formAction} className="space-y-4">
-
-            {errorMessage && (
-          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md text-sm flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-            {errorMessage}
-          </div>
-        )}
+            {callbackUrl && (
+              <input
+                type="hidden"
+                name="callbackUrl"
+                value={callbackUrl}
+              />
+            )}
+            {state?.formError && (
+              <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md text-sm flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                {state?.formError}
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -59,6 +65,11 @@ function LoginForm() {
                   disabled={isLoading}
                 />
               </div>
+              {state?.fieldErrors?.email && (
+                <p className="text-sm text-red-500">
+                  {state.fieldErrors.email.join(", ")}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -89,6 +100,11 @@ function LoginForm() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {state?.fieldErrors?.password && (
+                <p className="text-sm text-red-500">
+                  {state.fieldErrors.password.join(", ")}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center gap-2">

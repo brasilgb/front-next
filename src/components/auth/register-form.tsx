@@ -2,7 +2,6 @@
 
 import { useActionState, useEffect } from 'react'
 import AuthLayout from './auth-layout';
-import { registerTenant } from "@/lib/actions";
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -12,12 +11,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import AuthLogo from './auth-logo';
 import Link from 'next/link';
+import { registerTenant } from '@/lib/actions';
 
 function RegisterForm() {
-  const [state, formAction, isPending] = useActionState(
-    registerTenant,
-    undefined
-  );
+
+const [state, formAction, isPending] = useActionState(
+  registerTenant,
+  undefined
+);
 
 
   const [showPassword, setShowPassword] = useState(false)
@@ -35,10 +36,10 @@ function RegisterForm() {
         <CardContent>
           <form action={formAction} className="space-y-4">
 
-            {state?.message && !state?.errors && (
+            {state?.formError && (
               <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md text-sm flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-                {state.message}
+                {state?.formError}
               </div>
             )}
 
@@ -54,9 +55,9 @@ function RegisterForm() {
                     disabled={isPending}
                   />
                 </div>
-                {state?.errors?.company && (
+                {state?.fieldErrors?.company && (
                   <p className="text-sm text-red-500">
-                    {state.errors.company.join(', ')}
+                    {state.fieldErrors.company.join(', ')}
                   </p>
                 )}
               </div>
@@ -71,9 +72,9 @@ function RegisterForm() {
                     disabled={isPending}
                   />
                 </div>
-                {state?.errors?.cnpj && (
+                {state?.fieldErrors?.cnpj && (
                   <p className="text-sm text-red-500">
-                    {state.errors.cnpj.join(', ')}
+                    {state.fieldErrors.cnpj.join(', ')}
                   </p>
                 )}
               </div>
@@ -81,19 +82,19 @@ function RegisterForm() {
 
             <div className='grid grid-cols-2 gap-4'>
               <div className="space-y-2">
-                <Label htmlFor="fullName">Nome Completo</Label>
+                <Label htmlFor="name">Nome Completo</Label>
                 <div className="relative">
                   <Input
-                    id="fullName"
-                    name="fullName"
+                    id="name"
+                    name="name"
                     type="text"
                     placeholder="Seu nome completo"
                     disabled={isPending}
                   />
                 </div>
-                {state?.errors?.fullName && (
+                {state?.fieldErrors?.name && (
                   <p className="text-sm text-red-500">
-                    {state.errors.fullName.join(', ')}
+                    {state.fieldErrors.name.join(', ')}
                   </p>
                 )}
               </div>
@@ -110,9 +111,9 @@ function RegisterForm() {
                     disabled={isPending}
                   />
                 </div>
-                {state?.errors?.email && (
+                {state?.fieldErrors?.email && (
                   <p className="text-sm text-red-500">
-                    {state.errors.email.join(', ')}
+                    {state.fieldErrors.email.join(', ')}
                   </p>
                 )}
               </div>
@@ -130,9 +131,9 @@ function RegisterForm() {
                     disabled={isPending}
                   />
                 </div>
-                {state?.errors?.phone && (
+                {state?.fieldErrors?.phone && (
                   <p className="text-sm text-red-500">
-                    {state.errors.phone.join(', ')}
+                    {state.fieldErrors.phone.join(', ')}
                   </p>
                 )}
               </div>
@@ -147,9 +148,9 @@ function RegisterForm() {
                     disabled={isPending}
                   />
                 </div>
-                {state?.errors?.whatsapp && (
+                {state?.fieldErrors?.whatsapp && (
                   <p className="text-sm text-red-500">
-                    {state.errors.whatsapp.join(', ')}
+                    {state.fieldErrors.whatsapp.join(', ')}
                   </p>
                 )}
               </div>
@@ -167,9 +168,9 @@ function RegisterForm() {
                   className="pl-10 pr-10"
                   disabled={isPending}
                 />
-                {state?.errors?.password && (
+                {state?.fieldErrors?.password && (
                   <p className="text-sm text-red-500">
-                    {state.errors.password.join(', ')}
+                    {state.fieldErrors.password.join(', ')}
                   </p>
                 )}
                 <button
@@ -183,19 +184,19 @@ function RegisterForm() {
               </div>
 
               <div className="relative space-y-2">
-                <Label htmlFor="passwordConfirmation">Confirmar Senha</Label>
+                <Label htmlFor="password_confirmation">Confirmar Senha</Label>
                 <Lock className="absolute left-3 top-10 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  id="passwordConfirmation"
-                  name="passwordConfirmation"
+                  id="password_confirmation"
+                  name="password_confirmation"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className="pl-10 pr-10"
                   disabled={isPending}
                 />
-                {state?.errors?.passwordConfirmation && (
+                {state?.fieldErrors?.password_confirmation && (
                   <p className="text-sm text-red-500">
-                    {state.errors.passwordConfirmation.join(', ')}
+                    {state.fieldErrors.password_confirmation.join(', ')}
                   </p>
                 )}
                 <button
