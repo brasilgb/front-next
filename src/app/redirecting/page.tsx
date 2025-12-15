@@ -1,29 +1,12 @@
-import { redirect } from "next/navigation"
-import { auth } from "@/auth"
+// src/app/redirecting/page.tsx
 
-export default async function RedirectingPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ callbackUrl?: string }>
-}) {
-  const { callbackUrl } = await searchParams
-  const session = await auth()
+import RedirectingClient from "@/components/redirectingclient";
 
-  if (!session) {
-    redirect("/login")
-  }
 
-  const tenantId = session.user?.tenant_id ?? null
+interface RedirectingPageProps {
+  searchParams?: { callbackUrl?: string };
+}
 
-  // Se existir callbackUrl, respeita
-  if (callbackUrl) {
-    redirect(callbackUrl)
-  }
-
-  // Fallback por role
-  if (tenantId === null) {
-    redirect("/admin")
-  }
-
-  redirect("/app")
+export default function RedirectingPage({ searchParams }: RedirectingPageProps) {
+  return <RedirectingClient callbackUrl={searchParams?.callbackUrl} />;
 }
