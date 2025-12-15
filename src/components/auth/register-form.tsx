@@ -1,8 +1,8 @@
 "use client";
 
-import { useActionState } from 'react'
-import AuthLayout from './auth-layout'
-import { authenticate } from "@/lib/actions"; // Vamos criar abaixo
+import { useActionState, useEffect } from 'react'
+import AuthLayout from './auth-layout';
+import { registerTenant } from "@/lib/actions";
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -14,15 +14,13 @@ import AuthLogo from './auth-logo';
 import Link from 'next/link';
 
 function RegisterForm() {
-  const [errorMessage, formAction, isPending] = useActionState(
-    authenticate,
+  const [state, formAction, isPending] = useActionState(
+    registerTenant,
     undefined
   );
 
+
   const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <AuthLayout>
@@ -37,162 +35,182 @@ function RegisterForm() {
         <CardContent>
           <form action={formAction} className="space-y-4">
 
-            {errorMessage && (
+            {state?.message && !state?.errors && (
               <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-md text-sm flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-                {errorMessage}
+                {state.message}
               </div>
             )}
 
             <div className='grid grid-cols-3 gap-4'>
               <div className="space-y-2 col-span-2">
-                <Label htmlFor="email">Razão Social</Label>
+                <Label htmlFor="company">Razão Social</Label>
                 <div className="relative">
                   <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    disabled={isLoading}
+                    id="company"
+                    name="company"
+                    type="text"
+                    placeholder="Nome da sua empresa"
+                    disabled={isPending}
                   />
                 </div>
+                {state?.errors?.company && (
+                  <p className="text-sm text-red-500">
+                    {state.errors.company.join(', ')}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">CNPJ</Label>
+                <Label htmlFor="cnpj">CNPJ</Label>
                 <div className="relative">
                   <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    disabled={isLoading}
+                    id="cnpj"
+                    name="cnpj"
+                    type="text"
+                    placeholder="00.000.000/0000-00"
+                    disabled={isPending}
                   />
                 </div>
+                {state?.errors?.cnpj && (
+                  <p className="text-sm text-red-500">
+                    {state.errors.cnpj.join(', ')}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className='grid grid-cols-2 gap-4'>
               <div className="space-y-2">
-                <Label htmlFor="email">Nome Completo</Label>
+                <Label htmlFor="fullName">Nome Completo</Label>
                 <div className="relative">
                   <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    disabled={isLoading}
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    placeholder="Seu nome completo"
+                    disabled={isPending}
                   />
                 </div>
+                {state?.errors?.fullName && (
+                  <p className="text-sm text-red-500">
+                    {state.errors.fullName.join(', ')}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
                 <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="email"
                     name="email"
                     type="email"
                     placeholder="seu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                     className="pl-10"
-                    disabled={isLoading}
+                    disabled={isPending}
                   />
                 </div>
+                {state?.errors?.email && (
+                  <p className="text-sm text-red-500">
+                    {state.errors.email.join(', ')}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className='grid grid-cols-2 gap-4'>
               <div className="space-y-2">
-                <Label htmlFor="email">Telefone</Label>
+                <Label htmlFor="phone">Telefone</Label>
                 <div className="relative">
                   <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    disabled={isLoading}
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="(99) 99999-9999"
+                    disabled={isPending}
                   />
                 </div>
+                {state?.errors?.phone && (
+                  <p className="text-sm text-red-500">
+                    {state.errors.phone.join(', ')}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Whatsapp</Label>
+                <Label htmlFor="whatsapp">Whatsapp</Label>
                 <div className="relative">
                   <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    disabled={isLoading}
+                    id="whatsapp"
+                    name="whatsapp"
+                    type="tel"
+                    placeholder="(99) 99999-9999"
+                    disabled={isPending}
                   />
                 </div>
+                {state?.errors?.whatsapp && (
+                  <p className="text-sm text-red-500">
+                    {state.errors.whatsapp.join(', ')}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className='grid grid-cols-2 gap-4'>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <div className="relative space-y-2">
+                <Lock className="absolute left-3 top-10 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Label htmlFor="password">Senha</Label>
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10"
-                  disabled={isLoading}
+                  disabled={isPending}
                 />
+                {state?.errors?.password && (
+                  <p className="text-sm text-red-500">
+                    {state.errors.password.join(', ')}
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  disabled={isLoading}
+                  className="absolute right-3 top-10 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  disabled={isPending}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
 
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <div className="relative space-y-2">
+                <Label htmlFor="passwordConfirmation">Confirmar Senha</Label>
+                <Lock className="absolute left-3 top-10 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  id="password"
-                  name="password"
+                  id="passwordConfirmation"
+                  name="passwordConfirmation"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10"
-                  disabled={isLoading}
+                  disabled={isPending}
                 />
+                {state?.errors?.passwordConfirmation && (
+                  <p className="text-sm text-red-500">
+                    {state.errors.passwordConfirmation.join(', ')}
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  disabled={isLoading}
+                  className="absolute right-3 top-10 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  disabled={isPending}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-
-
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-              {isLoading ? (
+            <Button type="submit" className="w-full" size="lg" disabled={isPending}>
+              {isPending ? (
                 <>
                   <svg
                     className="animate-spin -ml-1 mr-2 h-4 w-4"
@@ -207,10 +225,10 @@ function RegisterForm() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Entrando...
+                  Cadastrando...
                 </>
               ) : (
-                "Entrar"
+                "Cadastrar"
               )}
             </Button>
 
@@ -228,9 +246,9 @@ function RegisterForm() {
             </p>
 
           </form>
-        </CardContent>
+        </CardContent >
       </Card>
-    </AuthLayout>
+    </AuthLayout >
   )
 }
 
