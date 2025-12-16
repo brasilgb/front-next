@@ -1,10 +1,10 @@
 import React from 'react'
-import UserActions from '../user-actions'
+import { UserActions } from '../user-actions'
 
 function SiteHeader() {
   return (
     <div>
-      <UserActions />
+     ok
     </div>
   )
 }

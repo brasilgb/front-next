@@ -1,8 +1,8 @@
-import React from 'react'
-
 function App() {
   return (
-    <div>Sou App</div>
+    <div>
+      Sou App ok
+    </div>
   )
 }
 
