@@ -2,15 +2,13 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarFooter
 } from "@/components/ui/sidebar"
-import { CalendarIcon, FileTextIcon, LayoutDashboardIcon, List, MemoryStickIcon, MessageSquareMoreIcon, PackagePlusIcon, Settings2, ShoppingCartIcon, User, UserCog, Users2Icon, WrenchIcon } from "lucide-react"
+import { CalendarIcon, FileTextIcon, LayoutDashboardIcon, MemoryStickIcon, MessageSquareMoreIcon, PackagePlusIcon, Settings2, ShoppingCartIcon, User, UserCog, Users2Icon, WrenchIcon } from "lucide-react"
 import { NavMain } from "./nav-main"
 import { NavSettings } from "./nav-settings"
+import SidebarLogo from "../sidebar-logo"
+import Link from "next/link"
 
 const data = {
   user: {
@@ -103,7 +101,7 @@ const data = {
     },
   ],
   users: [
-     {
+    {
       title: "Usuários",
       url: "/app/users",
       icon: UserCog,
@@ -114,28 +112,14 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="/app/">
-
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
+      <SidebarLogo />
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavSettings items={data.settings} />
         <NavMain items={data.users} />
       </SidebarContent>
       <SidebarFooter>
-        <p>Footer</p>
+        <Link href="https://sigmaos.com.br/">Sigma</Link>
       </SidebarFooter>
     </Sidebar>
   )

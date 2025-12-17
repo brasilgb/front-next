@@ -7,7 +7,7 @@ declare module "next-auth" {
       name?: string | null
       email?: string | null
       tenant_id: number | null
-      apiToken?: string
+      token?: string
     }
   }
 
@@ -20,6 +20,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     tenant_id: number | null
-    apiToken?: string
+    token?: string
   }
 }
+

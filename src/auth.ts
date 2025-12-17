@@ -50,13 +50,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         jwt({ token, user }) {
             if (user) {
                 token.tenant_id = user.tenant_id as number | null
-                token.apiToken = user.token as string | undefined
+                token.token = user.token as string | undefined
             }
             return token
         },
         session({ session, token }) {
             session.user.tenant_id = token.tenant_id as number | null
-            session.user.apiToken = token.apiToken as string | undefined
+            session.user.token = token.token as string | undefined
             return session
         },
     },
