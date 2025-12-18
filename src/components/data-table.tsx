@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { PlusCircle, X, Loader2 } from "lucide-react"
+import { DataTableSkeleton } from "./data-table-skeleton"
 
 interface DataTableProps<T> {
   columns: ColumnDef<T, any>[]
@@ -130,7 +131,7 @@ export function DataTable<T>({
 
       {/* Tabela */}
       <div
-        className={`rounded-md border transition-opacity ${isPageLoading ? "opacity-60 pointer-events-none" : ""
+        className={`rounded-md border transition-opacity duration-200 ${isPageLoading ? "opacity-60 pointer-events-none" : ""
           }`}
       >
         <Table>
@@ -179,7 +180,12 @@ export function DataTable<T>({
           </TableHeader>
 
           <TableBody>
-            {rows.length ? (
+            {isPageLoading ? (
+              <DataTableSkeleton
+                columns={columns.length}
+                rows={pageSize}
+              />
+            ) : rows.length ? (
               rows.map(row => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map(cell => (
@@ -199,7 +205,9 @@ export function DataTable<T>({
                 </TableCell>
               </TableRow>
             )}
+
           </TableBody>
+
         </Table>
       </div>
 
