@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { PlusCircle, X } from "lucide-react"
+import { PlusCircle, X, Loader2 } from "lucide-react"
 
 interface DataTableProps<T> {
   columns: ColumnDef<T, any>[]
@@ -41,17 +41,14 @@ interface DataTableProps<T> {
   isLoading?: boolean
   sorting?: SortingState
   onSortingChange?: (state: SortingState) => void
+  isSearching?: boolean
+  isPageLoading?: boolean
 }
 
-function getPaginationRange(
-  current: number,
-  total: number,
-  delta = 2
-) {
+function getPaginationRange(current: number, total: number, delta = 2) {
   const range: number[] = []
   const start = Math.max(1, current - delta)
   const end = Math.min(total, current + delta)
-
   for (let i = start; i <= end; i++) range.push(i)
   return range
 }
@@ -72,8 +69,9 @@ export function DataTable<T>({
   isLoading,
   sorting = [],
   onSortingChange,
+  isSearching,
+  isPageLoading
 }: DataTableProps<T>) {
-
   const pageCount = Math.ceil(total / pageSize)
   const pages = getPaginationRange(page, pageCount)
 
@@ -82,10 +80,7 @@ export function DataTable<T>({
     columns,
     pageCount,
     state: {
-      pagination: {
-        pageIndex: page - 1, // TanStack é 0-based
-        pageSize,
-      },
+      pagination: { pageIndex: page - 1, pageSize },
       sorting,
     },
     manualPagination: true,
@@ -93,6 +88,8 @@ export function DataTable<T>({
     onSortingChange,
     getCoreRowModel: getCoreRowModel(),
   })
+
+  const rows = table.getRowModel().rows
 
   return (
     <div className="space-y-4">
@@ -116,16 +113,14 @@ export function DataTable<T>({
             </button>
           )}
 
-          {isLoading && (
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 animate-spin">
-              ⏳
-            </span>
+          {isSearching && (
+            <Loader2 className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
           )}
         </div>
 
         {addButton && (
           <Link href={addButton.url}>
-            <Button>
+            <Button disabled={isLoading}>
               <PlusCircle className="mr-2 h-4 w-4" />
               {addButton.text}
             </Button>
@@ -133,41 +128,59 @@ export function DataTable<T>({
         )}
       </div>
 
-      {/* TABELA */}
-      <div className="rounded-md border">
+      {/* Tabela */}
+      <div
+        className={`rounded-md border transition-opacity ${isPageLoading ? "opacity-60 pointer-events-none" : ""
+          }`}
+      >
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(group => (
               <TableRow key={group.id}>
-                {group.headers.map(header => (
-                  <TableHead
-                    key={header.id}
-                    onClick={
-                      header.column.getCanSort()
-                        ? header.column.getToggleSortingHandler()
-                        : undefined
-                    }
-                    className={
-                      header.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : ""
-                    }
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                    {header.column.getIsSorted() === "asc" && " ↑"}
-                    {header.column.getIsSorted() === "desc" && " ↓"}
-                  </TableHead>
-                ))}
+                {group.headers.map(header => {
+                  const canSort = header.column.getCanSort()
+                  const sortState = header.column.getIsSorted()
+
+                  return (
+                    <TableHead
+                      key={header.id}
+                      onClick={
+                        canSort
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
+                      className={
+                        canSort
+                          ? "cursor-pointer select-none"
+                          : "select-none text-muted-foreground"
+                      }
+                    >
+                      <div className="flex items-center gap-1">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+
+                        {canSort && (
+                          <>
+                            {sortState === "asc" && <span>↑</span>}
+                            {sortState === "desc" && <span>↓</span>}
+                            {sortState === false && (
+                              <span className="opacity-50">↕</span>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </TableHead>
+                  )
+                })}
               </TableRow>
             ))}
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map(row => (
+            {rows.length ? (
+              rows.map(row => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>
@@ -190,18 +203,18 @@ export function DataTable<T>({
         </Table>
       </div>
 
-      {/* PAGINAÇÃO */}
+      {/* Paginação */}
       <div className="flex items-center justify-between text-sm">
         <span>
-          Página <strong>{page}</strong> de <strong>{pageCount}</strong> —{" "}
-          Total <strong>{total}</strong> registros
+          Página <strong>{page}</strong> de <strong>{pageCount}</strong> — Total{" "}
+          <strong>{total}</strong> registros
         </span>
 
         <div className="flex items-center gap-1">
           <Button
             variant="outline"
             size="sm"
-            disabled={page <= 1}
+            disabled={page <= 1 || isLoading}
             onClick={() => onPageChange(page - 1)}
           >
             Anterior
@@ -209,7 +222,12 @@ export function DataTable<T>({
 
           {page > 3 && (
             <>
-              <Button size="sm" variant="outline" onClick={() => onPageChange(1)}>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isLoading}
+                onClick={() => onPageChange(1)}
+              >
                 1
               </Button>
               <span>…</span>
@@ -221,6 +239,7 @@ export function DataTable<T>({
               key={p}
               size="sm"
               variant={p === page ? "default" : "outline"}
+              disabled={isLoading}
               onClick={() => onPageChange(p)}
             >
               {p}
@@ -233,6 +252,7 @@ export function DataTable<T>({
               <Button
                 size="sm"
                 variant="outline"
+                disabled={isLoading}
                 onClick={() => onPageChange(pageCount)}
               >
                 {pageCount}
@@ -243,7 +263,7 @@ export function DataTable<T>({
           <Button
             variant="outline"
             size="sm"
-            disabled={page >= pageCount}
+            disabled={isPageLoading}
             onClick={() => onPageChange(page + 1)}
           >
             Próxima

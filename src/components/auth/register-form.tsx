@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from 'react'
+import { useActionState } from 'react'
 import AuthLayout from './auth-layout';
 
 import { useState } from "react"

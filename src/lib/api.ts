@@ -1,6 +1,16 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
+export class ApiValidationError extends Error {
+    errors: Record<string, string[]>
+
+    constructor(message: string, errors: Record<string, string[]>) {
+        super(message)
+        this.name = "ApiValidationError"
+        this.errors = errors
+    }
+}
+
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 interface FetchOptions extends RequestInit {
@@ -29,10 +39,19 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
 
     // Tratamento centralizado de erros
     if (!res.ok) {
-        // Se o token expirou (401), você pode tratar aqui ou lançar erro
-        const errorBody = await res.text();
-        console.error(`Erro na API [${endpoint}]:`, errorBody);
-        throw new Error(`Erro API: ${res.statusText}`);
+        let body: any = {}
+
+        try {
+            body = await res.json()
+        } catch {
+            // resposta sem JSON
+        }
+
+        return Promise.reject({
+            status: res.status,
+            message: body?.message ?? "Erro API",
+            fieldErrors: body?.fieldErrors,
+        })
     }
 
     // Se a resposta for 204 (No Content), retorna null

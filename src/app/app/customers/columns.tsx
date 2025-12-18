@@ -12,22 +12,27 @@ export const customerColumns: ColumnDef<Customer>[] = [
     {
         accessorKey: "name",
         header: "Nome",
+        enableSorting: true,
     },
     {
         accessorKey: "email",
         header: "Email",
+        enableSorting: false,
     },
     {
         accessorKey: "cpf",
         header: "CPF/CNPJ",
+        enableSorting: true,
     },
     {
         accessorKey: "phone",
         header: "Telefone",
+        enableSorting: false,
     },
     {
         accessorKey: "created_at",
         header: "Data de Cadastro",
+        enableSorting: true,
         cell: ({ row }: any) => {
             const date = new Date(row.getValue("created_at"))
             return date.toLocaleDateString("pt-BR")

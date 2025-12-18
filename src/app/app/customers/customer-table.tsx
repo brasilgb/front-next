@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { ColumnDef, SortingState } from "@tanstack/react-table"
 import { DataTable } from "@/components/data-table"
 import { useDebounce } from "@/hooks/use-debounce"
@@ -25,25 +25,40 @@ export default function CustomersTable<T>({
 }: Props<T>) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
+  const [isSearching, setIsSearching] = useState(false)
 
   const [value, setValue] = useState(search)
   const [isTyping, setIsTyping] = useState(false)
 
   const debouncedSearch = useDebounce(value, 500)
 
-  function navigate(params: Partial<{ page: number; pageSize: number; search: string }>) {
-    const query = new URLSearchParams({
-      page: String(params.page ?? page),
-      pageSize: String(params.pageSize ?? pageSize),
-      search: params.search ?? search,
-      sortBy: searchParams.get("sortBy") ?? "",
-      sortDir: searchParams.get("sortDir") ?? "",
-    })
+  /* ===============================
+     Navegação centralizada
+  =============================== */
+  function navigate(params: Partial<{
+    page: number
+    pageSize: number
+    search: string
+    sortBy?: string
+    sortDir?: string
+  }>) {
+    const query = new URLSearchParams(searchParams.toString())
 
-    router.push(`/app/customers?${query.toString()}`)
+    if (params.page !== undefined) query.set("page", String(params.page))
+    if (params.pageSize !== undefined) query.set("pageSize", String(params.pageSize))
+    if (params.search !== undefined) query.set("search", params.search)
+    if (params.sortBy !== undefined) query.set("sortBy", params.sortBy)
+    if (params.sortDir !== undefined) query.set("sortDir", params.sortDir)
+
+    startTransition(() => {
+      router.push(`/app/customers?${query.toString()}`)
+    })
   }
 
-  // Debounce automático
+  /* ===============================
+     Debounce da busca
+  =============================== */
   useEffect(() => {
     if (debouncedSearch !== search) {
       setIsTyping(false)
@@ -54,8 +69,11 @@ export default function CustomersTable<T>({
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      setIsTyping(false)
-      navigate({ page: 1, search: value })
+      setIsSearching(false)
+
+      startTransition(() => {
+        navigate({ page: 1, search: value })
+      })
     }
   }
 
@@ -64,41 +82,66 @@ export default function CustomersTable<T>({
     setValue(val)
   }
 
+  useEffect(() => {
+    if (debouncedSearch !== search) {
+      setIsSearching(false)
+
+      startTransition(() => {
+        navigate({ page: 1, search: debouncedSearch })
+      })
+    }
+  }, [debouncedSearch])
+
   function clearSearch() {
     setValue("")
     setIsTyping(false)
     navigate({ page: 1, search: "" })
   }
 
+  /* ===============================
+     Sorting
+  =============================== */
   const sorting: SortingState = searchParams.get("sortBy")
     ? [
-        {
-          id: searchParams.get("sortBy")!,
-          desc: searchParams.get("sortDir") === "desc",
-        },
-      ]
+      {
+        id: searchParams.get("sortBy")!,
+        desc: searchParams.get("sortDir") === "desc",
+      },
+    ]
     : []
 
-  function handleSortingChange(next: SortingState) {
-    if (!next.length) return
+  function handleSortingChange(
+    updater: SortingState | ((old: SortingState) => SortingState)
+  ) {
+    const next =
+      typeof updater === "function" ? updater(sorting) : updater
 
-    const { id, desc } = next[0]
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("page", "1")
 
-    const query = new URLSearchParams({
-      page: "1",
-      pageSize: String(pageSize),
-      search,
-      sortBy: id,
-      sortDir: desc ? "desc" : "asc",
+    if (!next || next.length === 0) {
+      params.delete("sortBy")
+      params.delete("sortDir")
+    } else {
+      const sort = next[0]
+      if (!sort?.id) return
+
+      params.set("sortBy", sort.id)
+      params.set("sortDir", sort.desc ? "desc" : "asc")
+    }
+
+    startTransition(() => {
+      router.push(`/app/customers?${params.toString()}`)
     })
-
-    router.push(`/app/customers?${query.toString()}`)
   }
 
+  /* ===============================
+     Render
+  =============================== */
   return (
     <DataTable
       columns={columns}
-      data={data}
+      data={data ?? []}
       total={total}
       page={page}
       pageSize={pageSize}
@@ -106,9 +149,13 @@ export default function CustomersTable<T>({
       onSearchChange={handleSearchChange}
       onSearchKeyDown={handleKeyDown}
       onClearSearch={clearSearch}
-      isLoading={isTyping}
-      onPageChange={(p) => navigate({ page: p })}
-      placeholder="nome e CPF/CNPJ"
+      isLoading={isPending}
+      onPageChange={(p) =>
+        startTransition(() => {
+          navigate({ page: p })
+        })
+      }
+      placeholder="Pesquise por nome ou CPF/CNPJ"
       addButton={{
         text: "Novo Cliente",
         url: "/app/customers/create",

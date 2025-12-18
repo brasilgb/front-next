@@ -1,49 +1,20 @@
 "use server"; // Importante se for usar em formulários/Server Actions
 
-import { apiFetch } from "@/lib/api";
+import { apiFetch, ApiValidationError } from "@/lib/api";
+import { Customer } from "@/types/app-types";
 
-// Tipagem (opcional, mas recomendada)
-interface Customer {
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
-
-interface GetCustomersParams {
-  page?: number;
-  pageSize?: number;
-  search?: string;
-  sortBy?: string;
-  sortDir?: string;
-}
 
 // GET - Buscar todos
-export async function getCustomers({
-  page = 1,
-  pageSize = 12,
-  search = "",
-  sortBy,
-  sortDir
-}: GetCustomersParams) {
+export async function getCustomers({ page = 1, pageSize = 11, search = "", sortBy = "", sortDir = "" } = {}) {
   const query = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
     search,
-  });
+    sortBy,
+    sortDir,
+  })
 
-  return apiFetch<PaginatedResponse<Customer>>(
-    `/customers?${query.toString()}`,
-    {
-      next: { tags: ["customers"] },
-    }
-  );
+  return apiFetch(`/customers?${query.toString()}`)
 }
 
 // GET - Buscar um
@@ -53,10 +24,27 @@ export async function getCustomerById(id: number) {
 
 // POST - Criar (Server Action)
 export async function createCustomer(data: any) {
-  return apiFetch<Customer>("/customers", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  try {
+    await apiFetch<Customer>("/customers", {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+    return { success: true }
+  } catch (error: any) {
+    console.log(error);
+    
+    if (error.status === 400 && error.fieldErrors) {
+      return {
+        success: false,
+        fieldErrors: error.fieldErrors,
+      }
+    }
+
+    return {
+      success: false,
+      message: error.message ?? "Erro inesperado",
+    }
+  }
 }
 
 // DELETE - Deletar (Server Action)
