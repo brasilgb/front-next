@@ -5,6 +5,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  OnChangeFn,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table"
@@ -41,17 +42,40 @@ interface DataTableProps<T> {
   onClearSearch?: () => void
   isLoading?: boolean
   sorting?: SortingState
-  onSortingChange?: (state: SortingState) => void
+  onSortingChange?: OnChangeFn<SortingState>
   isSearching?: boolean
   isPageLoading?: boolean
 }
 
-function getPaginationRange(current: number, total: number, delta = 2) {
-  const range: number[] = []
-  const start = Math.max(1, current - delta)
-  const end = Math.min(total, current + delta)
-  for (let i = start; i <= end; i++) range.push(i)
-  return range
+function getPaginationItems(
+  current: number,
+  total: number,
+  siblingCount = 2
+): (number | "dots")[] {
+  const items: (number | "dots")[] = []
+
+  const left = Math.max(current - siblingCount, 2)
+  const right = Math.min(current + siblingCount, total - 1)
+
+  items.push(1)
+
+  if (left > 2) {
+    items.push("dots")
+  }
+
+  for (let i = left; i <= right; i++) {
+    items.push(i)
+  }
+
+  if (right < total - 1) {
+    items.push("dots")
+  }
+
+  if (total > 1) {
+    items.push(total)
+  }
+
+  return items
 }
 
 export function DataTable<T>({
@@ -74,7 +98,7 @@ export function DataTable<T>({
   isPageLoading
 }: DataTableProps<T>) {
   const pageCount = Math.ceil(total / pageSize)
-  const pages = getPaginationRange(page, pageCount)
+  const paginationItems = getPaginationItems(page, pageCount)
 
   const table = useReactTable({
     data: data ?? [],
@@ -222,60 +246,39 @@ export function DataTable<T>({
           <Button
             variant="outline"
             size="sm"
-            disabled={page <= 1 || isLoading}
+            disabled={isPageLoading || page <= 1}
             onClick={() => onPageChange(page - 1)}
           >
             Anterior
           </Button>
 
-          {page > 3 && (
-            <>
+          {paginationItems.map((item: any, idx: number) =>
+            item === "dots" ? (
+              <span key={`dots-${idx}`} className="px-2 text-muted-foreground">
+                …
+              </span>
+            ) : (
               <Button
+                key={item}
                 size="sm"
-                variant="outline"
-                disabled={isLoading}
-                onClick={() => onPageChange(1)}
+                variant={item === page ? "default" : "outline"}
+                onClick={() => onPageChange(item)}
+                disabled={isPageLoading}
               >
-                1
+                {item}
               </Button>
-              <span>…</span>
-            </>
-          )}
-
-          {pages.map(p => (
-            <Button
-              key={p}
-              size="sm"
-              variant={p === page ? "default" : "outline"}
-              disabled={isLoading}
-              onClick={() => onPageChange(p)}
-            >
-              {p}
-            </Button>
-          ))}
-
-          {page < pageCount - 2 && (
-            <>
-              <span>…</span>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={isLoading}
-                onClick={() => onPageChange(pageCount)}
-              >
-                {pageCount}
-              </Button>
-            </>
+            )
           )}
 
           <Button
             variant="outline"
             size="sm"
-            disabled={isPageLoading}
+            disabled={isPageLoading || page >= pageCount}
             onClick={() => onPageChange(page + 1)}
           >
             Próxima
           </Button>
+
         </div>
       </div>
     </div>

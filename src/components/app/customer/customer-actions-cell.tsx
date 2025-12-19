@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation"
 import { Customer } from "@/types/app-types"
 import { IoLogoWhatsapp } from 'react-icons/io'
 import Link from "next/link"
+import { toastWarning } from "@/helpers/toast-messages"
 
 interface ActionsCellProps {
     customer: Customer;
@@ -37,6 +38,7 @@ export function CustomerActionsCell({
             await deleteCustomer(customer.id)
             setOpen(false)
             router.refresh()
+            toastWarning('Deletar registro','Registro deletado com sucesso')
         } catch (error) {
             console.error("Erro ao deletar:", error)
         } finally {

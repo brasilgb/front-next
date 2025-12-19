@@ -39,6 +39,15 @@ export function maskPhone(value: string) {
         .replace(/(\d{5})(\d)/, "$1-$2")
 }
 
+/* ================= WHATSAPP ================= */
+export function maskWhatsapp(value: string) {
+    // Remove tudo que não seja número
+    const onlyNumbers = value.replace(/\D/g, "")
+
+    // Limita a quantidade de caracteres a 13
+    return onlyNumbers.slice(0, 13)
+}
+
 /* ================= CEP ================= */
 export function maskZipCode(value: string) {
     return onlyNumbers(value)

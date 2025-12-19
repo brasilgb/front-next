@@ -1,11 +1,11 @@
 "use server"; // Importante se for usar em formulários/Server Actions
 
 import { apiFetch } from "@/lib/api";
-import { Customer } from "@/types/app-types";
+import { User } from "@/types/app-types";
 
 
 // GET - Buscar todos
-export async function getCustomers({ page = 1, pageSize = 11, search = "", sortBy = "", sortDir = "" } = {}) {
+export async function getUsers({ page = 1, pageSize = 11, search = "", sortBy = "", sortDir = "" } = {}) {
   const query = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
@@ -14,18 +14,18 @@ export async function getCustomers({ page = 1, pageSize = 11, search = "", sortB
     sortDir,
   })
 
-  return apiFetch(`/customers?${query.toString()}`)
+  return apiFetch(`/users?${query.toString()}`)
 }
 
-// GET - Buscar um cliente
-export async function getCustomerById(id: number) {
-  return apiFetch<Customer>(`/customers/${id}`);
+// GET - Buscar um usuario
+export async function getUserById(id: number) {
+  return apiFetch<User>(`/users/${id}`);
 }
 
 // POST - Criar (Server Action)
-export async function createCustomer(data: Customer) {
+export async function createUser(data: User) {
   try {
-    await apiFetch<Customer>("/customers", {
+    await apiFetch<User>("/users", {
       method: "POST",
       body: JSON.stringify(data),
     })
@@ -48,15 +48,11 @@ export async function createCustomer(data: Customer) {
 }
 
 // PATCH - Editar (Server Action)
-export async function updateCustomer(id: number, data: Customer) {
+export async function updateUser(id: number, data: User) {
   try {
-    const dataUp = {
-      ...data,
-      number: data.number ? Number(data.number) : null,
-    }
-    await apiFetch<Customer>(`/customers/${id}`, {
+    await apiFetch<User>(`/users/${id}`, {
       method: "PATCH",
-      body: JSON.stringify(dataUp),
+      body: JSON.stringify(data),
     })
     return { success: true }
   } catch (error: any) {
@@ -77,8 +73,8 @@ export async function updateCustomer(id: number, data: Customer) {
 }
 
 // DELETE - Deletar (Server Action)
-export async function deleteCustomer(id: number) {
-  return apiFetch<Customer>(`/customers/${id}`, {
+export async function deleteUser(id: number) {
+  return apiFetch<User>(`/users/${id}`, {
     method: "DELETE"
   });
 }
