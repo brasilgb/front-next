@@ -1,3 +1,8 @@
+export interface BreadcrumbItem {
+  title: string;
+  href: string;
+}
+
 export interface User {
   id: number;
   user_number: number;
@@ -6,11 +11,12 @@ export interface User {
   telephone: string;
   whatsapp: string;
   password: string;
-  roles:number;
+  roles: number;
   status: number;
 }
 
 export interface Customer {
+  data: [];
   id: number;
   customer_number: number;
   name: string;
@@ -31,7 +37,28 @@ export interface Customer {
   observations: string;
 }
 
-export interface BreadcrumbItem {
-  title: string;
-  href: string;
+export interface Order {
+  id: number;
+  tenant_id: number;
+  customer_id: number;
+  equipment_id: number;
+  order_number: number;
+  model: string;
+  password: string;
+  defect: string;
+  state_conservation: string;
+  accessories: string;
+  budget_description: string;
+  budget_value: number;
+  service_status: number;
+  delivery_forecast: Date;
+  observations: string;
+  services_performed: string;
+  parts: string;
+  parts_value: number;
+  service_value: number;
+  service_cost: number;
+  delivery_date: Date;
+  responsible_technician: string;
+  feedback: Boolean;
 }

@@ -1,10 +1,10 @@
-import { customerColumns } from './columns'
-import { getCustomers } from '@/lib/actions/customers'
-import CustomersTable from './customer-table'
+import { orderColumns } from './columns'
 import AppLayout from '@/components/app/app-layout'
 import { Icon } from '@/components/icon'
-import { Users2Icon } from 'lucide-react'
+import { Users2Icon, WrenchIcon } from 'lucide-react'
 import { BreadcrumbItem } from '@/types/app-types'
+import { getOrders } from '@/lib/actions/orders'
+import OrdersTable from './order-table'
 
 interface PageProps {
   searchParams?: {
@@ -35,18 +35,18 @@ export default async function Orders({ searchParams }: PageProps) {
   const sortBy = String(params?.sortBy ?? "created_at")
   const sortDir = String(params?.sortDir ?? "desc")
 
-  const customers = await getCustomers({ page, pageSize, search, sortBy, sortDir }) as any;
+  const orders = await getOrders({ page, pageSize, search, sortBy, sortDir }) as any;
 
   return (
     <AppLayout
       bredcrumbData={breadcrumbs}
-      title="Clientes"
-      icon={<Icon iconNode={Users2Icon} className='w-8 h-8' />}
+      title="Ordens"
+      icon={<Icon iconNode={WrenchIcon} className='w-8 h-8' />}
     >
-      <CustomersTable
-        columns={customerColumns}
-        data={customers.data ?? []}
-        total={customers.total ?? 0}
+      <OrdersTable
+        columns={orderColumns}
+        data={orders.data ?? []}
+        total={orders.total ?? 0}
         page={page}
         pageSize={pageSize}
         search={search}

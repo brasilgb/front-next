@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { BreadcrumbItem } from '@/types/app-types';
 import { ArrowLeftCircle, Users2Icon } from 'lucide-react';
 import Link from 'next/link';
-import CustomerForm from '../../customer-form';
+import CustomerForm from '../../create-form';
 import { getCustomerById } from '@/lib/actions/customers';
 
 const breadcrumbs: BreadcrumbItem[] = [

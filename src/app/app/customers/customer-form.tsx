@@ -1,5 +1,6 @@
 "use client"
 
+import { DatePicker } from '@/components/date-picker';
 import { Button } from '@/components/ui/button';
 import { CardContent, CardFooter } from '@/components/ui/card'; // Adicionei Header/Title se quiser usar
 import { Input } from '@/components/ui/input';
@@ -77,7 +78,6 @@ export default function Create({ initialData }: CustomerFormProps) {
       return
     }
 
-    // ✅ Sucesso
     if (isEdit) {
       toastSuccess("Cliente alterado", "Edição realizada com sucesso")
     } else {
@@ -86,7 +86,6 @@ export default function Create({ initialData }: CustomerFormProps) {
       router.push("/app/customers")
     }
   }
-
 
   return (
 
@@ -118,10 +117,18 @@ export default function Create({ initialData }: CustomerFormProps) {
 
           <div className="grid gap-2">
             <Label htmlFor="birth">Nascimento</Label>
-            <Input
-              id="birth"
-              {...register('birth')}
+            <Controller
+              control={control}
+              name="birth"
+              render={({ field }) => (
+                <DatePicker
+                  mode="single"
+                  date={field.value as any}
+                  setDate={field.onChange}
+                />
+              )}
             />
+          {errors.birth && <span className="text-sm text-destructive">{errors.birth.message}</span>}
           </div>
 
           <div className="grid gap-2 md:col-span-2">

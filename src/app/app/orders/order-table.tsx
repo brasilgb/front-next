@@ -15,7 +15,7 @@ interface Props<T> {
   search: string
 }
 
-export default function CustomersTable<T>({
+export default function OrdersTable<T>({
   columns,
   data,
   total,
@@ -52,7 +52,7 @@ export default function CustomersTable<T>({
     if (params.sortDir !== undefined) query.set("sortDir", params.sortDir)
 
     startTransition(() => {
-      router.push(`/app/customers?${query.toString()}`)
+      router.push(`/app/orders?${query.toString()}`)
     })
   }
 
@@ -131,7 +131,7 @@ export default function CustomersTable<T>({
     }
 
     startTransition(() => {
-      router.push(`/app/customers?${params.toString()}`)
+      router.push(`/app/orders?${params.toString()}`)
     })
   }
 
@@ -155,10 +155,10 @@ export default function CustomersTable<T>({
           navigate({ page: p })
         })
       }
-      placeholder="Pesquise por nome ou CPF/CNPJ"
+      placeholder="Pesquise por ordem, nome ou CPF/CNPJ"
       addButton={{
-        text: "Novo Cliente",
-        url: "/app/customers/create",
+        text: "Nova Ordem",
+        url: "/app/orders/create",
       }}
       sorting={sorting}
       onSortingChange={handleSortingChange}

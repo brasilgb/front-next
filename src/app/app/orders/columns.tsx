@@ -1,27 +1,17 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Customer } from "@/types/app-types"
-import { CustomerActionsCell } from "@/components/app/customer/customer-actions-cell"
+import { Order } from "@/types/app-types"
+import { OrderActionsCell } from "@/components/app/orders/order-actions-cell"
 
-export const customerColumns: ColumnDef<Customer>[] = [
+export const orderColumns: ColumnDef<Order>[] = [
     {
-        accessorKey: "customer_number",
+        accessorKey: "order_number",
         header: "#",
     },
     {
         accessorKey: "name",
         header: "Nome",
-        enableSorting: true,
-    },
-    {
-        accessorKey: "email",
-        header: "Email",
-        enableSorting: false,
-    },
-    {
-        accessorKey: "cpf",
-        header: "CPF/CNPJ",
         enableSorting: true,
     },
     {
@@ -31,12 +21,37 @@ export const customerColumns: ColumnDef<Customer>[] = [
     },
     {
         accessorKey: "created_at",
-        header: "Data de Cadastro",
+        header: "Recebimento",
         enableSorting: true,
         cell: ({ row }: any) => {
             const date = new Date(row.getValue("created_at"))
             return date.toLocaleDateString("pt-BR")
         },
+    },
+    {
+        accessorKey: "equipment",
+        header: "Equipamento",
+        enableSorting: false,
+    },
+    {
+        accessorKey: "model",
+        header: "Modelo",
+        enableSorting: false,
+    },
+    {
+        accessorKey: "service_status",
+        header: "Status",
+        enableSorting: false,
+    },
+    {
+        accessorKey: "delivery_date",
+        header: "Entrega",
+        enableSorting: false,
+    },
+    {
+        accessorKey: "feedback",
+        header: "Feedback",
+        enableSorting: true,
     },
     {
         id: "actions",
@@ -46,8 +61,8 @@ export const customerColumns: ColumnDef<Customer>[] = [
             const search = table.getState().globalFilter as string
 
             return (
-                <CustomerActionsCell
-                    customer={row.original}
+                <OrderActionsCell
+                    order={row.original}
                     page={pageIndex + 1}
                     pageSize={pageSize}
                     search={search}
