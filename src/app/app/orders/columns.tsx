@@ -3,6 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Order } from "@/types/app-types"
 import { OrderActionsCell } from "@/components/app/orders/order-actions-cell"
+import { statusOrdemConfig } from "@/utils/app-label-by-value"
+import { StatusBadge } from "@/components/StatusBadge"
 
 export const orderColumns: ColumnDef<Order>[] = [
     {
@@ -10,12 +12,12 @@ export const orderColumns: ColumnDef<Order>[] = [
         header: "#",
     },
     {
-        accessorKey: "name",
+        accessorKey: "customers.name",
         header: "Nome",
         enableSorting: true,
     },
     {
-        accessorKey: "phone",
+        accessorKey: "customers.phone",
         header: "Telefone",
         enableSorting: false,
     },
@@ -29,7 +31,7 @@ export const orderColumns: ColumnDef<Order>[] = [
         },
     },
     {
-        accessorKey: "equipment",
+        accessorKey: "equipment.equipment",
         header: "Equipamento",
         enableSorting: false,
     },
@@ -42,16 +44,24 @@ export const orderColumns: ColumnDef<Order>[] = [
         accessorKey: "service_status",
         header: "Status",
         enableSorting: false,
+        cell: ({ row }: any) => {
+            const status = row.getValue("service_status")
+            return <StatusBadge category="ordem" value={status} />
+        },
     },
     {
         accessorKey: "delivery_date",
         header: "Entrega",
-        enableSorting: false,
+        enableSorting: true,
+        cell: ({ row }: any) => {
+            const date = new Date(row.getValue("created_at"))
+            return date.toLocaleDateString("pt-BR")
+        },
     },
     {
         accessorKey: "feedback",
         header: "Feedback",
-        enableSorting: true,
+        enableSorting: false,
     },
     {
         id: "actions",

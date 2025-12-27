@@ -78,3 +78,8 @@ export async function deleteUser(id: number) {
     method: "DELETE"
   });
 }
+
+export async function listUsers() {
+  const  { users: data }  = await apiFetch<User>("/users");
+  return data;
+}

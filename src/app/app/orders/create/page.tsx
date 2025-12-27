@@ -2,8 +2,8 @@ import AppLayout from '@/components/app/app-layout';
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { BreadcrumbItem, Customer } from '@/types/app-types';
-import { ArrowLeftCircle, Users2Icon } from 'lucide-react';
+import { BreadcrumbItem } from '@/types/app-types';
+import { ArrowLeftCircle, WrenchIcon } from 'lucide-react';
 import Link from 'next/link';
 import CreateForm from '../create-form';
 import { listCustomers } from '@/lib/actions/customers';
@@ -31,7 +31,7 @@ const customers = await listCustomers() as any;
     <AppLayout
       bredcrumbData={breadcrumbs}
       title="Novo Ordem"
-      icon={<Icon iconNode={Users2Icon} className='w-8 h-8' />}
+      icon={<Icon iconNode={WrenchIcon} className='w-8 h-8' />}
     >
       <div className='mb-4'>
         <Link href="/app/orders">
@@ -41,9 +41,7 @@ const customers = await listCustomers() as any;
         </Link>
       </div>
       <Card>
-
     <CreateForm customers={customers} />
-
       </Card>
     </AppLayout>
   )

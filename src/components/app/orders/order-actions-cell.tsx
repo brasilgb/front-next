@@ -3,7 +3,9 @@
 import { Button } from "@/components/ui/button"
 import {
     CalendarDaysIcon,
+    ImageUpIcon,
     PencilIcon,
+    PrinterIcon,
     Trash2Icon,
     WrenchIcon
 } from "lucide-react"
@@ -38,7 +40,7 @@ export function OrderActionsCell({
             await deleteOrder(order.id)
             setOpen(false)
             router.refresh()
-            toastWarning('Deletar registro','Registro deletado com sucesso')
+            toastWarning('Deletar registro', 'Registro deletado com sucesso')
         } catch (error) {
             console.error("Erro ao deletar:", error)
         } finally {
@@ -52,10 +54,10 @@ export function OrderActionsCell({
                 <IoLogoWhatsapp size={24} color="#25D366" />
             </Button>
             <Button variant="secondary" size="icon" title="Verificar agendamentos">
-                <CalendarDaysIcon className="h-4 w-4 text-purple-500" />
+                <PrinterIcon className="h-4 w-4 text-purple-500" />
             </Button>
             <Button variant="secondary" size="icon" title="Verificar ordens de serviço">
-                <WrenchIcon className="h-4 w-4 text-sky-600" />
+                <ImageUpIcon className="h-4 w-4 text-sky-600" />
             </Button>
 
             <Link
@@ -66,7 +68,7 @@ export function OrderActionsCell({
                         pageSize,
                         ...(search && { search }),
                     },
-                }} 
+                }}
                 title="Editar dados do cliente"
             >
                 <Button variant="secondary" size="icon">

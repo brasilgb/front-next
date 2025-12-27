@@ -3,10 +3,12 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BreadcrumbItem } from '@/types/app-types';
-import { ArrowLeftCircle, Users2Icon } from 'lucide-react';
+import { ArrowLeftCircle, WrenchIcon } from 'lucide-react';
 import Link from 'next/link';
-import CustomerForm from '../../create-form';
-import { getCustomerById } from '@/lib/actions/customers';
+import { listCustomers } from '@/lib/actions/customers';
+import EditForm from '../../edit-form';
+import { getOrderById } from '@/lib/actions/orders';
+import { listUsers } from '@/lib/actions/users';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -14,11 +16,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     href: '/app',
   },
   {
-    title: 'Clientes',
-    href: '/app/customers',
+    title: 'Ordens',
+    href: '/app/ordens',
   },
   {
-    title: 'Editar Cliente',
+    title: 'Editar Ordem',
     href: '#', // Pode ser removido se não houver link específico
   },
 ];
@@ -35,20 +37,21 @@ interface EditProps {
 
 export default async function Edit({ params, searchParams }: EditProps) {
 
-
   const { id } = await params;
   const search = await searchParams;
 
-  const customer = await getCustomerById(Number(id));
+  const customers = await listCustomers() as any;
+  const order = await getOrderById(Number(id));
+  const users = await listUsers() as any;
 
   return (
     <AppLayout
       bredcrumbData={breadcrumbs} // Pequeno typo: 'breadcrumbData' seria mais correto
-      title="Editar Cliente"
-      icon={<Icon iconNode={Users2Icon} className="w-8 h-8" />}
+      title="Editar Ordem"
+      icon={<Icon iconNode={WrenchIcon} className="w-8 h-8" />}
     >
       <div className="mb-4">
-        <Link href={`/app/customers?page=${search.page}&pageSize=${search.pageSize}`}>
+        <Link href={`/app/orders?page=${search.page}&pageSize=${search.pageSize}`}>
           <Button variant="outline">
             <ArrowLeftCircle className="w-4 h-4 mr-2" />
             Voltar
@@ -57,7 +60,7 @@ export default async function Edit({ params, searchParams }: EditProps) {
       </div>
 
       <Card>
-        <CustomerForm initialData={customer as any} />
+        <EditForm customers={customers as any} initialData={order as any} users={users as any} />
       </Card>
     </AppLayout>
   );

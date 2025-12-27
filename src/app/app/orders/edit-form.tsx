@@ -9,9 +9,9 @@ import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toastSuccess, toastWarning } from '@/helpers/toast-messages';
-import { createOrder } from '@/lib/actions/orders';
+import { createOrder, updateOrder } from '@/lib/actions/orders';
 import { cn } from '@/lib/utils';
-import { Customer, Order } from '@/types/app-types';
+import { Customer, Order, User } from '@/types/app-types';
 import { Loader2Icon, SaveIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
@@ -19,20 +19,22 @@ import { statusOrcamento } from '@/utils/app-options';
 import { DatePicker } from '@/components/date-picker';
 
 interface OrderFormProps {
-  initialData?: {
-    order?: Order;
-  };
+  initialData?: Order;
   customers?: Customer[];
+  users: User[];
 }
 
 // Adicionado "export default" para que a página funcione no Next.js
-export default function CreateForm({ customers }: OrderFormProps) {
+export default function EditForm({ initialData, customers, users }: OrderFormProps) {
+  const router = useRouter()
   const customerOptions = customers?.map((customer: Customer) => ({
     value: customer.id,
     label: customer.name,
   }));
-
-  const router = useRouter()
+  const userOptions = users?.filter((user: any) => (user.roles === 3)).map((user: User) => ({
+    value: user.id,
+    label: user.name,
+  })) || [];
 
   const {
     register,
@@ -45,11 +47,13 @@ export default function CreateForm({ customers }: OrderFormProps) {
     getValues,
     clearErrors,
     formState: { errors, isSubmitting }
-  } = useForm<Order>()
+  } = useForm<Order>({
+    defaultValues: initialData
+  })
 
   const onSubmit: SubmitHandler<Order> = async (data) => {
 
-    const result = await createOrder(data)
+    const result = await updateOrder(initialData?.id as number, data)
 
     // Erros
     if (!result.success) {
@@ -138,7 +142,6 @@ export default function CreateForm({ customers }: OrderFormProps) {
               )}
             />
           </div>
-
         </div>
 
         <div className='grid md:grid-cols-3 gap-4'>
@@ -169,10 +172,9 @@ export default function CreateForm({ customers }: OrderFormProps) {
 
         </div>
 
-        <div className='grid md:grid-cols-4 gap-4'>
-
+        <div className='grid md:grid-cols-3 gap-4'>
           <div className="grid gap-2 md:col-span-2">
-            <Label htmlFor="street">Descrição pré-orçamento</Label>
+            <Label htmlFor="street">Descrição Orçamento</Label>
             <Textarea
               id="budget_description"
               {...register('budget_description')}
@@ -180,14 +182,62 @@ export default function CreateForm({ customers }: OrderFormProps) {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="budget_value">Descrição pré-orçamento</Label>
+            <Label htmlFor="budget_value">Valor Orçamento</Label>
             <Input
               defaultValue={0.00}
               id="budget_value"
               {...register('budget_value')}
             />
           </div>
+        </div>
 
+        <div className='grid grid-cols-3 gap-4'>
+          <div className="grid gap-2">
+            <Label htmlFor="parts_value">Valor das Peças</Label>
+            <Input
+              defaultValue={0.00}
+              id="parts_value"
+              {...register('parts_value')}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="service_value">Valor do Serviço</Label>
+            <Input
+              defaultValue={0.00}
+              id="service_value"
+              {...register('service_value')}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="service_cost">Valor Total</Label>
+            <Input
+              defaultValue={0.00}
+              id="service_cost"
+              {...register('service_cost')}
+            />
+          </div>
+        </div>
+
+        <div className='grid md:grid-cols-2 gap-4'>
+          <div className="grid gap-2">
+            <Label htmlFor="responsible_technician">Técnico Responsável</Label>
+            <Controller
+              name="responsible_technician"
+              control={control}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <AppReactSelect
+                  ref={ref}
+                  options={userOptions}
+                  value={userOptions?.find(c => c.value === value)}
+                  onChange={(val: any) => onChange(val?.value)}
+                  onBlur={onBlur}
+                  placeholder="Selecione o técnico"
+                  error={!!errors.responsible_technician}
+                />
+              )}
+            />
+            {errors.responsible_technician && <span className="text-sm text-destructive">{errors.responsible_technician.message}</span>}
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="service_status">Status Orçamento</Label>
             <Controller
@@ -204,15 +254,23 @@ export default function CreateForm({ customers }: OrderFormProps) {
               )}
             />
           </div>
-
         </div>
+        <div className='grid md:grid-cols-2 gap-4'>
+          <div className="grid gap-2">
+            <Label htmlFor="services_performed">Serviços executados</Label>
+            <Textarea
+              id="services_performed"
+              {...register('services_performed')}
+            />
+          </div>
 
-        <div className="grid gap-2">
-          <Label htmlFor="observations">Observações</Label>
-          <Textarea
-            id="observations"
-            {...register('observations')}
-          />
+          <div className="grid gap-2">
+            <Label htmlFor="observations">Observações</Label>
+            <Textarea
+              id="observations"
+              {...register('observations')}
+            />
+          </div>
         </div>
 
       </CardContent>

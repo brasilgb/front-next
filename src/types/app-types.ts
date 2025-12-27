@@ -13,6 +13,7 @@ export interface User {
   password: string;
   roles: number;
   status: number;
+  users: [];
 }
 
 export interface Customer {
@@ -60,5 +61,5 @@ export interface Order {
   service_cost: number;
   delivery_date: Date;
   responsible_technician: string;
-  feedback: Boolean;
+  feedback: boolean;
 }
