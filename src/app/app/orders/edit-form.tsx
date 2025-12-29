@@ -6,17 +6,17 @@ import { Button } from '@/components/ui/button';
 import { CardContent, CardFooter } from '@/components/ui/card'; // Adicionei Header/Title se quiser usar
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toastSuccess, toastWarning } from '@/helpers/toast-messages';
-import { createOrder, updateOrder } from '@/lib/actions/orders';
-import { cn } from '@/lib/utils';
+import { updateOrder } from '@/lib/actions/orders';
 import { Customer, Order, User } from '@/types/app-types';
 import { Loader2Icon, SaveIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
-import { statusOrcamento } from '@/utils/app-options';
+import { statusServico } from '@/utils/app-options';
 import { DatePicker } from '@/components/date-picker';
+import { useEffect } from 'react';
+import { maskMoney, maskMoneyDot } from '@/lib/masks';
 
 interface OrderFormProps {
   initialData?: Order;
@@ -27,10 +27,12 @@ interface OrderFormProps {
 // Adicionado "export default" para que a página funcione no Next.js
 export default function EditForm({ initialData, customers, users }: OrderFormProps) {
   const router = useRouter()
+
   const customerOptions = customers?.map((customer: Customer) => ({
     value: customer.id,
     label: customer.name,
   }));
+
   const userOptions = users?.filter((user: any) => (user.roles === 3)).map((user: User) => ({
     value: user.id,
     label: user.name,
@@ -44,16 +46,40 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
     watch,
     control,
     setValue,
-    getValues,
-    clearErrors,
     formState: { errors, isSubmitting }
   } = useForm<Order>({
     defaultValues: initialData
   })
 
-  const onSubmit: SubmitHandler<Order> = async (data) => {
+  // 1. "Assistindo" os valores em tempo real
+  const partsValueStr = watch('parts_value');
+  const serviceValueStr = watch('service_value');
 
-    const result = await updateOrder(initialData?.id as number, data)
+  useEffect(() => {
+    const parts = maskMoneyDot(partsValueStr);
+    const service = maskMoneyDot(serviceValueStr);
+    const total = Number(parts) + Number(service);
+    const costFormatted = total.toFixed(2);
+
+    setValue('service_cost', maskMoney(costFormatted));
+
+  }, [partsValueStr, serviceValueStr, setValue]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof Order) => {
+    const { value } = e.target;
+    console.log(value);
+    setValue(fieldName, maskMoney(value));
+  };
+
+  const onSubmit: SubmitHandler<Order> = async (data) => {
+    const payload = {
+      ...data,
+      parts_value: maskMoneyDot(data.parts_value),
+      service_value: maskMoneyDot(data.service_value),
+      service_cost: maskMoneyDot(data.service_cost),
+    };
+
+    const result = await updateOrder(initialData?.id as number, payload)
 
     // Erros
     if (!result.success) {
@@ -129,10 +155,10 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="delivery_date">Previsão de entrega</Label>
+            <Label htmlFor="delivery_forecast">Previsão de entrega</Label>
             <Controller
               control={control}
-              name="delivery_date"
+              name="delivery_forecast"
               render={({ field }) => (
                 <DatePicker
                   mode="single"
@@ -192,30 +218,39 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
         </div>
 
         <div className='grid grid-cols-3 gap-4'>
+
           <div className="grid gap-2">
             <Label htmlFor="parts_value">Valor das Peças</Label>
             <Input
               defaultValue={0.00}
               id="parts_value"
               {...register('parts_value')}
+              placeholder="0,00"
+              onChange={(e) => handleInputChange(e, "parts_value")}
             />
           </div>
+
           <div className="grid gap-2">
             <Label htmlFor="service_value">Valor do Serviço</Label>
             <Input
               defaultValue={0.00}
               id="service_value"
               {...register('service_value')}
+              placeholder="0,00"
+              onChange={(e) => handleInputChange(e, "service_value")}
             />
           </div>
+
           <div className="grid gap-2">
             <Label htmlFor="service_cost">Valor Total</Label>
             <Input
               defaultValue={0.00}
               id="service_cost"
               {...register('service_cost')}
+              readOnly
             />
           </div>
+
         </div>
 
         <div className='grid md:grid-cols-2 gap-4'>
@@ -228,8 +263,8 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
                 <AppReactSelect
                   ref={ref}
                   options={userOptions}
-                  value={userOptions?.find(c => c.value === value)}
-                  onChange={(val: any) => onChange(val?.value)}
+                  value={userOptions?.find(c => String(c.value) === String(value))}
+                  onChange={(val: any) => onChange(Number(val?.value))}
                   onBlur={onBlur}
                   placeholder="Selecione o técnico"
                   error={!!errors.responsible_technician}
@@ -238,23 +273,25 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
             />
             {errors.responsible_technician && <span className="text-sm text-destructive">{errors.responsible_technician.message}</span>}
           </div>
+
           <div className="grid gap-2">
-            <Label htmlFor="service_status">Status Orçamento</Label>
+            <Label htmlFor="service_status">Status do Serviço</Label>
             <Controller
               name="service_status"
               control={control}
               render={({ field }) => (
                 <AppSelect
-                  options={statusOrcamento}
+                  options={statusServico}
                   placeholder="Selecione uma opção"
                   onValueChange={field.onChange} // O Controller cuida da atualização
-                  value={field.value as any}           // O Controller fornece o valor atualizado
-                  defaultValue={field.value as any}
+                  value={field.value.toString() || ""}           // O Controller fornece o valor atualizado
+                  defaultValue={field.value.toString() || ""}
                 />
               )}
             />
           </div>
         </div>
+
         <div className='grid md:grid-cols-2 gap-4'>
           <div className="grid gap-2">
             <Label htmlFor="services_performed">Serviços executados</Label>

@@ -52,7 +52,7 @@ export interface Order {
   budget_description: string;
   budget_value: number;
   service_status: number;
-  delivery_forecast: Date;
+  delivery_forecast: string;
   observations: string;
   services_performed: string;
   parts: string;

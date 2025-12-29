@@ -5,6 +5,7 @@ import { Icon } from '@/components/icon'
 import { User2Icon, Users2Icon } from 'lucide-react'
 import { BreadcrumbItem } from '@/types/app-types'
 import { getUsers } from '@/lib/actions/users'
+import UsersTable from './user-table'
 
 interface PageProps {
   searchParams?: {

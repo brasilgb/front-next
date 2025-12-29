@@ -6,11 +6,9 @@ import { Button } from '@/components/ui/button';
 import { CardContent, CardFooter } from '@/components/ui/card'; // Adicionei Header/Title se quiser usar
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toastSuccess, toastWarning } from '@/helpers/toast-messages';
 import { createOrder } from '@/lib/actions/orders';
-import { cn } from '@/lib/utils';
 import { Customer, Order } from '@/types/app-types';
 import { Loader2Icon, SaveIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -180,7 +178,7 @@ export default function CreateForm({ customers }: OrderFormProps) {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="budget_value">Descrição pré-orçamento</Label>
+            <Label htmlFor="budget_value">Valor pré-orçamento</Label>
             <Input
               defaultValue={0.00}
               id="budget_value"
@@ -193,13 +191,13 @@ export default function CreateForm({ customers }: OrderFormProps) {
             <Controller
               name="service_status"
               control={control}
+              defaultValue={1}
               render={({ field }) => (
                 <AppSelect
                   options={statusOrcamento}
                   placeholder="Selecione uma opção"
                   onValueChange={field.onChange} // O Controller cuida da atualização
-                  value={field.value as any}           // O Controller fornece o valor atualizado
-                  defaultValue={field.value as any}
+                  value={field.value.toString() || ""}          // O Controller fornece o valor atualizado
                 />
               )}
             />

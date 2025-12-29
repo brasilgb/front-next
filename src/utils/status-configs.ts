@@ -7,7 +7,7 @@ export const APP_STATUS_CONFIGS = {
     5: { label: "Executando reparo", color: "bg-purple-100 text-purple-700 border-purple-200" },
     6: { label: "(CA)Serviço concluído", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
     7: { label: "(CN)Serviço concluído", color: "bg-teal-100 text-teal-700 border-teal-200" },
-    8: { label: "Entregue ao cliente", color: "bg-zinc-800 text-white border-zinc-900" },
+    8: { label: "Entregue ao cliente", color: "bg-green-600 text-white border-green-700" },
   },
   userStatus: {
     active: { label: "Ativo", color: "bg-green-100 text-green-700 border-green-200" },
