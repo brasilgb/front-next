@@ -40,10 +40,10 @@ export interface Customer {
 
 export interface Order {
   id: number;
+  order_number: number;
   tenant_id: number;
   customer_id: number;
   equipment_id: number;
-  order_number: number;
   model: string;
   password: string;
   defect: string;
@@ -62,4 +62,19 @@ export interface Order {
   delivery_date: Date;
   responsible_technician: string;
   feedback: boolean;
+}
+
+export interface Budget {
+  id: number;
+  budget_number: number;
+  category: string;
+  service: string;
+  model: string;
+  description: string;
+  estimated_time: string;
+  warranty: string;
+  obs: string;
+  part_value: string;
+  labor_value: string;
+  total_value: string;
 }

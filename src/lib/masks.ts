@@ -61,7 +61,6 @@ export function maskMoney(value: any) {
         valorAlterado = valorAlterado.replace(/\D/g, ""); // Remove todos os não dígitos
         valorAlterado = valorAlterado.replace(/(\d+)(\d{2})$/, "$1,$2"); // Adiciona a parte de centavos
         valorAlterado = valorAlterado.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."); // Adiciona pontos a cada três dígitos
-        valorAlterado = valorAlterado;
         return value = valorAlterado;
     }
 }
@@ -71,7 +70,6 @@ export function maskMoneyDot(value: any) {
         var valorAlterado = value;
         valorAlterado = valorAlterado.replace(/\D/g, ""); // Remove todos os não dígitos
         valorAlterado = valorAlterado.replace(/(\d+)(\d{2})$/, "$1.$2"); // Adiciona a parte de centavos
-        valorAlterado = valorAlterado;
         return value = valorAlterado;
     }
 }

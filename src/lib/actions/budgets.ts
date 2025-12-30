@@ -1,16 +1,14 @@
 "use server"; // Importante se for usar em formulários/Server Actions
 
 import { apiFetch } from "@/lib/api";
-import { Customer } from "@/types/app-types";
+import { Budget } from "@/types/app-types";
 
-export async function listCustomers() {
-  const { data } = await apiFetch<Customer>("/customers");
-  return data;
+export async function listBudgets() {
+  return await apiFetch<Budget>("/budgets");
 }
 
-
 // GET - Buscar todos
-export async function getCustomers({ page = 1, pageSize = 11, search = "", sortBy = "", sortDir = "" } = {}) {
+export async function getBudgets({ page = 1, pageSize = 11, search = "", sortBy = "", sortDir = "" } = {}) {
   const query = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
@@ -19,24 +17,20 @@ export async function getCustomers({ page = 1, pageSize = 11, search = "", sortB
     sortDir,
   })
 
-  return apiFetch(`/customers?${query.toString()}`)
+  return apiFetch(`/budgets?${query.toString()}`)
 }
 
 // GET - Buscar um cliente
-export async function getCustomerById(id: number) {
-  return apiFetch<Customer>(`/customers/${id}`);
+export async function getBudgetById(id: number) {
+  return apiFetch<Budget>(`/budgets/${id}`);
 }
 
 // POST - Criar (Server Action)
-export async function createCustomer(data: Customer) {
+export async function createBudget(data: Budget) {
   try {
-    const dataUp = {
-      ...data,
-      number: data.number ? Number(data.number) : null,
-    }
-    await apiFetch<Customer>("/customers", {
+    await apiFetch<Budget>("/budgets", {
       method: "POST",
-      body: JSON.stringify(dataUp),
+      body: JSON.stringify(data),
     })
     return { success: true }
   } catch (error: any) {
@@ -55,19 +49,15 @@ export async function createCustomer(data: Customer) {
 }
 
 // PATCH - Editar (Server Action)
-export async function updateCustomer(id: number, data: Customer) {
+export async function updateBudget(id: number, data: Budget) {
   try {
-    const dataUp = {
-      ...data,
-      number: data.number ? Number(data.number) : null,
-    }
-    await apiFetch<Customer>(`/customers/${id}`, {
+
+    await apiFetch<Budget>(`/budgets/${id}`, {
       method: "PATCH",
-      body: JSON.stringify(dataUp),
+      body: JSON.stringify(data),
     })
     return { success: true }
   } catch (error: any) {
-    console.log(error);
 
     if (error.status === 400 && error.fieldErrors) {
       return {
@@ -84,8 +74,8 @@ export async function updateCustomer(id: number, data: Customer) {
 }
 
 // DELETE - Deletar (Server Action)
-export async function deleteCustomer(id: number) {
-  return apiFetch<Customer>(`/customers/${id}`, {
+export async function deleteBudget(id: number) {
+  return apiFetch<Budget>(`/budgets/${id}`, {
     method: "DELETE"
   });
 }

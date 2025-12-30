@@ -3,7 +3,7 @@
 import { AppSelect } from '@/components/app-select';
 import { AppReactSelect } from '@/components/app-react-select';
 import { Button } from '@/components/ui/button';
-import { CardContent, CardFooter } from '@/components/ui/card'; // Adicionei Header/Title se quiser usar
+import { CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import { statusOrcamento } from '@/utils/app-options';
 import { DatePicker } from '@/components/date-picker';
+import { maskMoney, maskMoneyDot } from '@/lib/masks';
 
 interface OrderFormProps {
   initialData?: {
@@ -37,19 +38,23 @@ export default function CreateForm({ customers }: OrderFormProps) {
     handleSubmit,
     setError,
     reset,
-    watch,
     control,
     setValue,
-    getValues,
-    clearErrors,
     formState: { errors, isSubmitting }
   } = useForm<Order>()
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof Order) => {
+    const { value } = e.target;
+    setValue(fieldName, maskMoney(value));
+  };
+
   const onSubmit: SubmitHandler<Order> = async (data) => {
+    const payload = {
+      ...data,
+      budget_value: maskMoneyDot(data.budget_value),
+    }
+    const result = await createOrder(payload)
 
-    const result = await createOrder(data)
-
-    // Erros
     if (!result.success) {
       if (result.fieldErrors) {
         Object.entries(result.fieldErrors).forEach(([field, message]) => {
@@ -183,6 +188,7 @@ export default function CreateForm({ customers }: OrderFormProps) {
               defaultValue={0.00}
               id="budget_value"
               {...register('budget_value')}
+              onChange={(e) => handleInputChange(e, "budget_value")}
             />
           </div>
 

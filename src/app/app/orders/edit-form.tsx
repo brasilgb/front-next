@@ -3,7 +3,7 @@
 import { AppSelect } from '@/components/app-select';
 import { AppReactSelect } from '@/components/app-react-select';
 import { Button } from '@/components/ui/button';
-import { CardContent, CardFooter } from '@/components/ui/card'; // Adicionei Header/Title se quiser usar
+import { CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,7 +24,6 @@ interface OrderFormProps {
   users: User[];
 }
 
-// Adicionado "export default" para que a página funcione no Next.js
 export default function EditForm({ initialData, customers, users }: OrderFormProps) {
   const router = useRouter()
 
@@ -48,10 +47,14 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
     setValue,
     formState: { errors, isSubmitting }
   } = useForm<Order>({
-    defaultValues: initialData
+        defaultValues: {
+          ...initialData,
+          'parts_value': maskMoney(Number(initialData?.parts_value).toFixed(2)),
+          'service_value': maskMoney(Number(initialData?.service_value).toFixed(2)),
+          'budget_value': maskMoney(Number(initialData?.budget_value).toFixed(2))
+        }
   })
 
-  // 1. "Assistindo" os valores em tempo real
   const partsValueStr = watch('parts_value');
   const serviceValueStr = watch('service_value');
 
@@ -60,14 +63,12 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
     const service = maskMoneyDot(serviceValueStr);
     const total = Number(parts) + Number(service);
     const costFormatted = total.toFixed(2);
-
     setValue('service_cost', maskMoney(costFormatted));
 
   }, [partsValueStr, serviceValueStr, setValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof Order) => {
     const { value } = e.target;
-    console.log(value);
     setValue(fieldName, maskMoney(value));
   };
 
@@ -77,6 +78,7 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
       parts_value: maskMoneyDot(data.parts_value),
       service_value: maskMoneyDot(data.service_value),
       service_cost: maskMoneyDot(data.service_cost),
+      budget_value: maskMoneyDot(data.budget_value),
     };
 
     const result = await updateOrder(initialData?.id as number, payload)
@@ -97,7 +99,7 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
       return
     }
 
-    toastSuccess("Ordem salva", "Cadastro realizado com sucesso")
+    toastSuccess("Ordem salva", "Ordem editada com sucesso com sucesso")
     reset()
     router.push("/app/orders")
   }
@@ -213,6 +215,7 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
               defaultValue={0.00}
               id="budget_value"
               {...register('budget_value')}
+              onChange={(e) => handleInputChange(e, "budget_value")}
             />
           </div>
         </div>
