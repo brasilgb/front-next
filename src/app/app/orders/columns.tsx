@@ -3,7 +3,6 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Order } from "@/types/app-types"
 import { OrderActionsCell } from "@/components/app/orders/order-actions-cell"
-import { statusOrdemConfig } from "@/utils/app-label-by-value"
 import { StatusBadge } from "@/components/StatusBadge"
 
 export const orderColumns: ColumnDef<Order>[] = [

@@ -74,7 +74,7 @@ export interface Budget {
   estimated_time: string;
   warranty: string;
   obs: string;
-  part_value: string;
-  labor_value: string;
-  total_value: string;
+  part_value: number;
+  labor_value: number;
+  total_value: number;
 }

@@ -66,6 +66,14 @@ const statusSaas = [
     { value: '6', label: "Vence em 5D" }
 ];
 
+const garantiaOrcamento = [
+    {value: '0', label: 'Sem garantia'},
+    {value: '1', label: '1 mês'},
+    {value: '3', label: '3 meses'},
+    {value: '6', label: '6 meses'},
+    {value: '12', label: '12 meses'}
+]
+
 export {
     statusServico,
     statusUser,
@@ -76,5 +84,6 @@ export {
     statusAgenda,
     statusMessage,
     statusOrcamento,
-    statusSaas
+    statusSaas,
+    garantiaOrcamento
 };

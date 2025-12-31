@@ -4,7 +4,11 @@ import { apiFetch } from "@/lib/api";
 import { Budget } from "@/types/app-types";
 
 export async function listBudgets() {
-  return await apiFetch<Budget>("/budgets");
+  // return await apiFetch<Budget>("/budgets");
+  const { data } = await apiFetch<Budget[]>("/budgets");
+// console.log(data.category);
+
+  return [...new Set(data?.map(b => b.category))];
 }
 
 // GET - Buscar todos

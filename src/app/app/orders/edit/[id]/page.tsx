@@ -17,7 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
   {
     title: 'Ordens',
-    href: '/app/ordens',
+    href: '/app/orders',
   },
   {
     title: 'Editar Ordem',

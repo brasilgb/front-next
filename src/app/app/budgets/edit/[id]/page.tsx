@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { BreadcrumbItem } from '@/types/app-types';
 import { ArrowLeftCircle, Users2Icon } from 'lucide-react';
 import Link from 'next/link';
-import { getBudgetById } from '@/lib/actions/budgets';
+import { getBudgetById, listBudgets } from '@/lib/actions/budgets';
 import BudgetForm from '../../budget-form';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -35,6 +35,7 @@ interface EditProps {
 
 export default async function Edit({ params, searchParams }: EditProps) {
 
+const budgets = await listBudgets();
 
   const { id } = await params;
   const search = await searchParams;
@@ -57,7 +58,7 @@ export default async function Edit({ params, searchParams }: EditProps) {
       </div>
 
       <Card>
-        <BudgetForm initialData={budget} />
+        <BudgetForm initialData={budget} listbudgets={budgets} />
       </Card>
     </AppLayout>
   );

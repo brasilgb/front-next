@@ -34,7 +34,7 @@ const budgets = await listBudgets();
       icon={<Icon iconNode={Users2Icon} className='w-8 h-8' />}
     >
       <div className='mb-4'>
-        <Link href="/app/orcamentos">
+        <Link href="/app/budgets">
           <Button variant={'outline'}>
             <ArrowLeftCircle className='w-4 h-4 mr-2' /> Voltar
           </Button>

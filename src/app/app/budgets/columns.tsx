@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Budget } from "@/types/app-types"
+import { BudgetActionsCell } from "@/components/app/budget/budget-actions-cell"
 
 export const budgetColumns: ColumnDef<Budget>[] = [
     {
@@ -16,7 +17,7 @@ export const budgetColumns: ColumnDef<Budget>[] = [
     {
         accessorKey: "service",
         header: "Serviço",
-        enableSorting: false,
+        enableSorting: true,
     },
     {
         accessorKey: "estimated_time",
@@ -44,14 +45,14 @@ export const budgetColumns: ColumnDef<Budget>[] = [
             const { pageIndex, pageSize } = table.getState().pagination
             const search = table.getState().globalFilter as string
 
-            // return (
-                // <BudgetActionsCell
-                //     customer={row.original}
-                //     page={pageIndex + 1}
-                //     pageSize={pageSize}
-                //     search={search}
-                // />
-            // )
+            return (
+                <BudgetActionsCell
+                    budget={row.original}
+                    page={pageIndex + 1}
+                    pageSize={pageSize}
+                    search={search}
+                />
+            )
         },
     },
 ]
