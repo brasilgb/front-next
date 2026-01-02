@@ -78,3 +78,17 @@ export interface Budget {
   labor_value: number;
   total_value: number;
 }
+
+export interface Schedule {
+  id: number;
+  tenant_id: number;
+  customer_id: number;
+  user_id: number;
+  schedules_number: number;
+  schedules: Date;
+  service: string;
+  details: string;
+  status: number;
+  observations: number;
+  created_at: number;
+}

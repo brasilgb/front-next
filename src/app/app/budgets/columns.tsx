@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Budget } from "@/types/app-types"
 import { BudgetActionsCell } from "@/components/app/budget/budget-actions-cell"
+import { maskMoney } from "@/lib/masks"
 
 export const budgetColumns: ColumnDef<Budget>[] = [
     {
@@ -21,13 +22,16 @@ export const budgetColumns: ColumnDef<Budget>[] = [
     },
     {
         accessorKey: "estimated_time",
-        header: "Tempo estimado",
+        header: "Tempo estimado (%)",
         enableSorting: false,
     },
     {
         accessorKey: "total_value",
         header: "Valor Total",
         enableSorting: false,
+        cell: ({ row }: any) => {
+            return 'R$ '+maskMoney(Number(row.getValue("total_value")).toFixed(2))
+        }
     },
     {
         accessorKey: "created_at",

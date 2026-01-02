@@ -20,7 +20,7 @@ export const APP_STATUS_CONFIGS = {
     3: { label: "Técnico", color: "bg-cyan-100 text-cyan-700 border-cyan-200" },
   },
   agenda: {
-    1: { label: "Aberta", color: "bg-blue-100 text-blue-700 border-blue-200" },
+    1: { label: "Aberto", color: "bg-blue-100 text-blue-700 border-blue-200" },
     2: { label: "Atendimento", color: "bg-amber-100 text-amber-700 border-amber-200" },
     3: { label: "Fechada", color: "bg-green-100 text-green-700 border-green-200" },
   },

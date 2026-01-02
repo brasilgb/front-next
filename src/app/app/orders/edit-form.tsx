@@ -225,7 +225,6 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
           <div className="grid gap-2">
             <Label htmlFor="parts_value">Valor das Peças</Label>
             <Input
-              defaultValue={0.00}
               id="parts_value"
               {...register('parts_value')}
               placeholder="0,00"
@@ -236,7 +235,6 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
           <div className="grid gap-2">
             <Label htmlFor="service_value">Valor do Serviço</Label>
             <Input
-              defaultValue={0.00}
               id="service_value"
               {...register('service_value')}
               placeholder="0,00"
@@ -247,7 +245,6 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
           <div className="grid gap-2">
             <Label htmlFor="service_cost">Valor Total</Label>
             <Input
-              defaultValue={0.00}
               id="service_cost"
               {...register('service_cost')}
               readOnly
