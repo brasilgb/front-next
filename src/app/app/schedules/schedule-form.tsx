@@ -45,6 +45,8 @@ export default function Create({ initialData, customers, users }: ScheduleFormPr
     label: user.name,
   })) || [];
 
+  const dataFormatada = moment(initialData?.schedules).format("YYYY-MM-DDTHH:mm");
+
   const {
     register,
     handleSubmit,
@@ -53,15 +55,18 @@ export default function Create({ initialData, customers, users }: ScheduleFormPr
     control,
     formState: { errors, isSubmitting }
   } = useForm<Schedule>({
-    defaultValues: initialData || {}
-  })
+    defaultValues: initialData
+      ? { ...initialData, schedules: dataFormatada }
+      : {}
+  } as any)
 
   const onSubmit: SubmitHandler<Schedule> = async (data) => {
+
     const payload = {
       ...data,
-      schedules: moment(data.schedules).toISOString(),
+      schedules: moment.utc(data.schedules).toISOString(),
       status: data.status as number
-    }
+    } as any
     const result = isEdit
       ? await updateSchedule(Number(initialData?.id), payload)
       : await createSchedule(data)

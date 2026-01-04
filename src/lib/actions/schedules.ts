@@ -29,7 +29,6 @@ export async function getScheduleById(id: number) {
 
 // POST - Criar (Server Action)
 export async function createSchedule(data: Schedule) {
-console.log(data);
 
   try {
     await apiFetch<Schedule>("/schedules", {
