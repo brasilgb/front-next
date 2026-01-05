@@ -1,15 +1,16 @@
 "use server"; // Importante se for usar em formulários/Server Actions
 
 import { apiFetch } from "@/lib/api";
-import { Budget } from "@/types/app-types";
+import { Message } from "@/types/app-types";
 
-export async function listBudgets() {
-  const { data } = await apiFetch<Budget[]>("/budgets") as any;
+export async function listMessages() {
+  const { data } = await apiFetch<Message[]>("/messages") as any;
+
   return [...new Set(data?.map((b: any) => b.category))];
 }
 
 // GET - Buscar todos
-export async function getBudgets({ page = 1, pageSize = 11, search = "", sortBy = "", sortDir = "" } = {}) {
+export async function getMessages({ page = 1, pageSize = 11, search = "", sortBy = "", sortDir = "" } = {}) {
   const query = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
@@ -18,23 +19,25 @@ export async function getBudgets({ page = 1, pageSize = 11, search = "", sortBy 
     sortDir,
   })
 
-  return apiFetch(`/budgets?${query.toString()}`)
+  return apiFetch(`/messages?${query.toString()}`)
 }
 
 // GET - Buscar um cliente
-export async function getBudgetById(id: number) {
-  return apiFetch<Budget>(`/budgets/${id}`);
+export async function getMessageById(id: number) {
+  return apiFetch<Message>(`/messages/${id}`);
 }
 
 // POST - Criar (Server Action)
-export async function createBudget(data: Budget) {
+export async function createMessage(data: Message) {
+
   try {
-    await apiFetch<Budget>("/budgets", {
+    await apiFetch<Message>("/messages", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     })
     return { success: true }
   } catch (error: any) {
+    
     if (error.status === 400 && error.fieldErrors) {
       return {
         success: false,
@@ -50,10 +53,10 @@ export async function createBudget(data: Budget) {
 }
 
 // PATCH - Editar (Server Action)
-export async function updateBudget(id: number, data: Budget) {
+export async function updateMessage(id: number, data: Message) {
   try {
 
-    await apiFetch<Budget>(`/budgets/${id}`, {
+    await apiFetch<Message>(`/messages/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
     })
@@ -75,8 +78,8 @@ export async function updateBudget(id: number, data: Budget) {
 }
 
 // DELETE - Deletar (Server Action)
-export async function deleteBudget(id: number) {
-  return apiFetch<Budget>(`/budgets/${id}`, {
+export async function deleteMessage(id: number) {
+  return apiFetch<Message>(`/messages/${id}`, {
     method: "DELETE"
   });
 }

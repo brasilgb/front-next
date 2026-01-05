@@ -55,6 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return token
         },
         session({ session, token }) {
+            session.user.id = token.sub as string
             session.user.tenant_id = token.tenant_id as number | null
             session.user.token = token.token as string | undefined
             return session

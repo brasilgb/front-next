@@ -15,7 +15,7 @@ interface Props<T> {
   search: string
 }
 
-export default function BudgetsTable<T>({
+export default function ProductsTable<T>({
   columns,
   data,
   total,
@@ -52,7 +52,7 @@ export default function BudgetsTable<T>({
     if (params.sortDir !== undefined) query.set("sortDir", params.sortDir)
 
     startTransition(() => {
-      router.push(`/app/budgets?${query.toString()}`)
+      router.push(`/app/products?${query.toString()}`)
     })
   }
 
@@ -131,7 +131,7 @@ export default function BudgetsTable<T>({
     }
 
     startTransition(() => {
-      router.push(`/app/budgets?${params.toString()}`)
+      router.push(`/app/products?${params.toString()}`)
     })
   }
 
@@ -155,10 +155,10 @@ export default function BudgetsTable<T>({
           navigate({ page: p })
         })
       }
-      placeholder="Pesquise por categoria e serviço"
+      placeholder="Pesquise por numero ou nome"
       addButton={{
-        text: "Novo Orçamento",
-        url: "/app/budgets/create",
+        text: "Novo Produto",
+        url: "/app/products/create",
       }}
       sorting={sorting}
       onSortingChange={handleSortingChange}

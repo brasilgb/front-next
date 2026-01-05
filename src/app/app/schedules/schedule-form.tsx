@@ -69,7 +69,7 @@ export default function Create({ initialData, customers, users }: ScheduleFormPr
     } as any
     const result = isEdit
       ? await updateSchedule(Number(initialData?.id), payload)
-      : await createSchedule(data)
+      : await createSchedule(payload)
 
     if (!result.success) {
       if (result.fieldErrors) {

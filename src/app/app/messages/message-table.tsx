@@ -15,7 +15,7 @@ interface Props<T> {
   search: string
 }
 
-export default function BudgetsTable<T>({
+export default function MessagesTable<T>({
   columns,
   data,
   total,
@@ -52,7 +52,7 @@ export default function BudgetsTable<T>({
     if (params.sortDir !== undefined) query.set("sortDir", params.sortDir)
 
     startTransition(() => {
-      router.push(`/app/budgets?${query.toString()}`)
+      router.push(`/app/messages?${query.toString()}`)
     })
   }
 
@@ -131,7 +131,7 @@ export default function BudgetsTable<T>({
     }
 
     startTransition(() => {
-      router.push(`/app/budgets?${params.toString()}`)
+      router.push(`/app/messages?${params.toString()}`)
     })
   }
 
@@ -155,10 +155,10 @@ export default function BudgetsTable<T>({
           navigate({ page: p })
         })
       }
-      placeholder="Pesquise por categoria e serviço"
+      placeholder="Pesquisar por destinatário"
       addButton={{
-        text: "Novo Orçamento",
-        url: "/app/budgets/create",
+        text: "Nova Mensagem",
+        url: "/app/messages/create",
       }}
       sorting={sorting}
       onSortingChange={handleSortingChange}

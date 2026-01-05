@@ -26,6 +26,11 @@ const movimentosProdutos = [
     { value: '2', label: "Saída" },
 ];
 
+const statusProducts = [
+    { value: 0, label: "Inativo" },
+    { value: 1, label: "Ativo" },
+];
+
 const unidadesProdutos = [
     { value: '1', label: "Unidade" },
     { value: '2', label: "Caixa" },
@@ -48,8 +53,8 @@ const statusAgenda = [
 ];
 
 const statusMessage = [
-    { value: '1', label: "Não lida" },
-    { value: '2', label: "Lida" },
+    { value: 0, label: "Não lida" },
+    { value: 1, label: "Lida" },
 ];
 
 const statusOrcamento = [
@@ -67,11 +72,11 @@ const statusSaas = [
 ];
 
 const garantiaOrcamento = [
-    {value: '0', label: 'Sem garantia'},
-    {value: '1', label: '1 mês'},
-    {value: '3', label: '3 meses'},
-    {value: '6', label: '6 meses'},
-    {value: '12', label: '12 meses'}
+    { value: '0', label: 'Sem garantia' },
+    { value: '1', label: '1 mês' },
+    { value: '3', label: '3 meses' },
+    { value: '6', label: '6 meses' },
+    { value: '12', label: '12 meses' }
 ]
 
 export {
@@ -85,5 +90,6 @@ export {
     statusMessage,
     statusOrcamento,
     statusSaas,
-    garantiaOrcamento
+    garantiaOrcamento,
+    statusProducts
 };

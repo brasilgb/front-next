@@ -90,5 +90,56 @@ export interface Schedule {
   details: string;
   status: number;
   observations: number;
-  created_at: number;
+  created_at: Date;
+}
+
+export interface Message {
+  id: number;
+  tenant_id: number;
+  sender_id: number;
+  recipient_id: number;
+  message_number: number;
+  title: string;
+  message: string;
+  status: number;
+  created_at: Date;
+}
+
+export interface Product {
+  id: number;
+  tenant_id: number;
+  product_number: number;
+  part_number: string;
+  category: string;
+  name: string;
+  description: string;
+  manufacturer: string;
+  model_compatibility: string;
+  cost_price: number;
+  sale_price: number;
+  quantity: number;
+  minimum_stock_level: number;
+  location: string;
+  status: number;
+  created_at: Date;
+}
+
+// Vendas *************************************
+export interface SaleItemInput {
+  productId: number
+  quantity: number
+  unitPrice: number
+}
+
+export interface CreateSaleDTO {
+  customerId?: number | null
+  tenantId: number
+  items: SaleItemInput[]
+}
+
+export type ActionResponse = {
+  success: boolean
+  message?: string
+  fieldErrors?: Record<string, string[]>
+  data?: any // Retorno opcional da venda criada
 }

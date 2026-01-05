@@ -1,7 +1,9 @@
+import { SalesModal } from "@/components/app/sales/SalesModal"
+
 function App() {
   return (
-    <div>
-      Sou App ok
+    <div className="w-full">
+      <SalesModal />
     </div>
   )
 }
