@@ -6,7 +6,7 @@ import { BreadcrumbItem } from '@/types/app-types';
 import { ArrowLeftCircle, MemoryStickIcon, Users2Icon } from 'lucide-react';
 import Link from 'next/link';
 import ProductForm from '../product-form';
-import { listProducts } from '@/lib/actions/products';
+import { listCategories } from '@/lib/actions/products';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -25,7 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default async function Create() {
 
-const products = await listProducts();
+const categories = await listCategories();
 
   return (
     <AppLayout
@@ -41,7 +41,7 @@ const products = await listProducts();
         </Link>
       </div>
       <Card>
-        <ProductForm listproducts={products} />
+        <ProductForm listcategories={categories} />
       </Card>
     </AppLayout>
   )

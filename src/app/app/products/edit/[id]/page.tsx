@@ -3,9 +3,9 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BreadcrumbItem } from '@/types/app-types';
-import { ArrowLeftCircle, MemoryStickIcon, Users2Icon } from 'lucide-react';
+import { ArrowLeftCircle, MemoryStickIcon } from 'lucide-react';
 import Link from 'next/link';
-import { getProductById, listProducts } from '@/lib/actions/products';
+import { getProductById, listCategories } from '@/lib/actions/products';
 import ProductForm from '../../product-form';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -35,7 +35,7 @@ interface EditProps {
 
 export default async function Edit({ params, searchParams }: EditProps) {
 
-const products = await listProducts();
+const categories = await listCategories();
 
   const { id } = await params;
   const search = await searchParams;
@@ -58,7 +58,7 @@ const products = await listProducts();
       </div>
 
       <Card>
-        <ProductForm initialData={product} listproducts={products} />
+        <ProductForm initialData={product} listcategories={categories} />
       </Card>
     </AppLayout>
   );

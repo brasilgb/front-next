@@ -1,11 +1,14 @@
-import { SalesModal } from "@/components/app/sales/SalesModal"
+import { SalesModal } from "@/components/app/sales/sales-modal"
+import { listCustomers } from "@/lib/actions/customers";
+import { listProducts } from "@/lib/actions/products";
 
-function App() {
+export default async function App() {
+      const customers = await listCustomers();
+      const products = await listProducts();
+
   return (
     <div className="w-full">
-      <SalesModal />
+      <SalesModal customers={customers} products={products} />
     </div>
   )
 }
-
-export default App

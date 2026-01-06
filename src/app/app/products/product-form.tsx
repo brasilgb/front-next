@@ -1,41 +1,39 @@
 "use client"
 
-import { AppSelect } from '@/components/app-select';
 // import { DatePicker } from '@/components/date-picker'; // Não estava sendo usado no trecho
 import { Button } from '@/components/ui/button';
 import { CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { toastSuccess, toastWarning } from '@/helpers/toast-messages';
 import { createProduct, updateProduct } from '@/lib/actions/products';
 import { maskMoney, maskMoneyDot } from '@/lib/masks';
 import { cn } from '@/lib/utils';
 import { Product } from '@/types/app-types';
-import { garantiaOrcamento, statusProducts } from '@/utils/app-options';
+import { statusProducts } from '@/utils/app-options';
 import { selectStyles } from '@/utils/selected-styles';
 import { Loader2Icon, SaveIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import CreatableSelect from 'react-select/creatable';
 
 interface ProductFormProps {
   initialData?: Product;
-  listproducts?: any;
+  listcategories?: any;
 }
 interface OptionType {
   value: string;
   label: string;
 }
 
-export default function Create({ initialData, listproducts }: ProductFormProps) {
+export default function Create({ initialData, listcategories }: ProductFormProps) {
 
   const router = useRouter()
   const isEdit = !!initialData
 
-  const initialCategoryOptions: OptionType[] = listproducts?.map((product: any) => ({
+  const initialCategoryOptions: OptionType[] = listcategories?.map((product: any) => ({
     value: product,
     label: product,
   })) || [];

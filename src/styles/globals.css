@@ -120,3 +120,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  @page {
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  #print-area {
+    box-shadow: none;
+  }
+}

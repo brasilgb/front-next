@@ -3,9 +3,14 @@
 import { apiFetch } from "@/lib/api";
 import { Product } from "@/types/app-types";
 
-export async function listProducts() {
+export async function listCategories() {
   const { data } = await apiFetch<Product[]>("/products") as any;
   return [...new Set(data?.map((b: any) => b.category))];
+}
+
+export async function listProducts() {
+  const { data } = await apiFetch<Product[]>("/products") as any;
+  return data;
 }
 
 // GET - Buscar todos

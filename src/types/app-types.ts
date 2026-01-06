@@ -133,7 +133,7 @@ export interface SaleItemInput {
 
 export interface CreateSaleDTO {
   customerId?: number | null
-  tenantId: number
+  tenantId?: number
   items: SaleItemInput[]
 }
 

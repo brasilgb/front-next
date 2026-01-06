@@ -30,12 +30,12 @@ export default function EditForm({ initialData, customers, users }: OrderFormPro
   const customerOptions = customers?.map((customer: Customer) => ({
     value: customer.id,
     label: customer.name,
-  }));
+  })) ;
 
   const userOptions = users?.filter((user: any) => (user.roles === 3)).map((user: User) => ({
     value: user.id,
     label: user.name,
-  })) || [];
+  }));
 
   const {
     register,

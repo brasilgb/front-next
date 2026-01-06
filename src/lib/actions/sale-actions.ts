@@ -1,4 +1,5 @@
-// actions/sale-actions.ts
+"use server"
+
 import { apiFetch } from "@/lib/api" // Seu wrapper de fetch
 import { ActionResponse, CreateSaleDTO } from "@/types/app-types"
 import { sanitizeSaleData } from "@/utils/sanitizers"
